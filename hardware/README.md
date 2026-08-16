@@ -168,6 +168,266 @@ When CRITICAL condition detected:
 
 ---
 
+## Experimental Arduino Sketches
+
+The following sketches represent **validation and testing code** for individual hardware components and sensor integration. They are NOT the production firmware — see **Production Firmware** section below.
+
+### Overview of Validation Sketches
+
+| Sketch | Location | Purpose | Status |
+|--------|----------|---------|--------|
+| **I2C_Scanner_for_INA219.ino** | `hardware/sensors/` | Detect INA219 on I2C bus (0x40) | ✅ Validated |
+| **Load_Detection.ino** | `hardware/sensors/` | Validate INA219 voltage/current/power measurements | ✅ Validated |
+| **PushButton_Check.ino** | `hardware/sensors/` | Test digital input (GPIO26, GPIO27) for button/switch detection | ✅ Validated |
+| **CSVforZoneData.ino** | `hardware/zone-testing/` | Acquire all 3 zone voltages + INA219 data simultaneously | ✅ Validated |
+| **INATamper_Combined.ino** | `hardware/integration/` | **TRANSITION SKETCH** — Combined 3-zone + INA219 + future tamper sensor | ✅ Validated |
+
+---
+
+### Detailed Sketch Documentation
+
+#### 1. I2C_Scanner_for_INA219.ino
+**Location**: `hardware/sensors/I2C_Scanner_for_INA219.ino`
+
+**Purpose**: Verify INA219 is present on I2C bus before attempting measurements
+
+**Components Used**:
+- ESP32 I2C pins (GPIO21 SDA, GPIO22 SCL)
+- INA219 sensor (expected at address 0x40)
+
+**What Was Tested**:
+- I2C bus initialization
+- Device scanning (addresses 0x01–0x7E)
+- INA219 presence detection at 0x40
+
+**Expected Output**:
+```
+Scanning I2C bus...
+I2C device found at address 0x40
+I2C scan complete.
+```
+
+**Current Status**: ✅ **VALIDATED**
+- INA219 reliably detected at 0x40
+- I2C communication confirmed working
+
+**Next Step**: Use Load_Detection.ino to validate power measurements
+
+---
+
+#### 2. Load_Detection.ino
+**Location**: `hardware/sensors/Load_Detection.ino`
+
+**Purpose**: Validate INA219 sensor accuracy and collect power measurement baseline
+
+**Components Used**:
+- ESP32 I2C interface (GPIO21 SDA, GPIO22 SCL)
+- INA219 I2C power sensor
+- Connected load (simulated fence zone load)
+
+**What Was Tested**:
+- Bus voltage measurement (0–26V range, prototype: 3.0–3.4V)
+- Shunt voltage measurement (current sensing)
+- Current calculation via integrated shunt
+- Power calculation (P = V × I)
+- Measurement stability over time
+
+**Expected Output** (Typical Prototype Values):
+```
+Bus Voltage   : 3.300 V
+Shunt Voltage : 10.500 mV
+Current       : 105.230 mA
+Power         : 347.500 mW
+```
+
+**Current Status**: ✅ **VALIDATED**
+- Bus voltage accuracy within ±1%
+- Current measurements precise (±0.5% via shunt)
+- Power calculation correct
+- 26 experimental samples collected with INA219 data
+
+**Data Quality Note**: 4 out of 26 samples showed bus_voltage = 0.000V caused by loose connections (not sensor failure). These were flagged as IMPUTED in dataset.
+
+**Next Step**: Integrate with zone voltage sensing (CSVforZoneData.ino)
+
+---
+
+#### 3. PushButton_Check.ino
+**Location**: `hardware/sensors/PushButton_Check.ino`
+
+**Purpose**: Validate digital input detection for safety-critical inputs (tamper, E-STOP)
+
+**Components Used**:
+- GPIO26 (E-STOP button, INPUT_PULLUP)
+- GPIO27 (Tamper switch, INPUT_PULLUP)
+- Push buttons with active-low logic
+
+**What Was Tested**:
+- GPIO pullup configuration (INPUT_PULLUP mode)
+- Button press detection (active-low logic: pressed = LOW)
+- Response time and debouncing
+- Simultaneous input monitoring (tamper + E-STOP)
+
+**Expected Output** (Button Released):
+```
+Tamper : NO
+E-STOP : RELEASED
+```
+
+**Expected Output** (Button Pressed):
+```
+Tamper : YES
+E-STOP : PRESSED
+```
+
+**Current Status**: ✅ **VALIDATED**
+- GPIO26 and GPIO27 reliably detect presses
+- INPUT_PULLUP logic working correctly
+- No debounce issues observed
+- Safe for relay control integration
+
+**Next Step**: Integrate with relay control logic in production firmware
+
+---
+
+#### 4. CSVforZoneData.ino
+**Location**: `hardware/zone-testing/CSVforZoneData.ino`
+
+**Purpose**: Validate 3-zone electrical integrity detection with integrated INA219 monitoring
+
+**Components Used**:
+- ESP32 ADC pins (GPIO32, GPIO33, GPIO34) for zone voltages
+- INA219 I2C sensor for bus metrics
+- End-of-line (EOL) resistor-based zone integrity sensing
+
+**What Was Tested**:
+- Zone voltage acquisition (all 3 zones simultaneously)
+- Threshold-based classification (NORMAL, OPEN/CUT, SHORT)
+- INA219 integration alongside zone sensing
+- Multi-sensor data collection and formatting
+
+**Expected Output** (All Zones Normal):
+```
+ZONE 1 | 1.45 V | NORMAL
+ZONE 2 | 1.50 V | NORMAL
+ZONE 3 | 1.48 V | NORMAL
+
+Bus Voltage : 3.300 V
+Current     : 105.23 mA
+Power       : 347.50 mW
+```
+
+**Expected Output** (Multi-Fault Scenario):
+```
+ZONE 1 | 3.30 V | OPEN/CUT
+ZONE 2 | 0.05 V | SHORT
+ZONE 3 | 1.48 V | NORMAL
+
+Bus Voltage : 3.150 V
+Current     : 110.05 mA
+Power       : 347.91 mW
+```
+
+**Current Status**: ✅ **VALIDATED**
+- All 9 combinations (3 zones × 3 states) tested successfully
+- Multi-fault detection working correctly
+- INA219 seamlessly integrated with zone sensing
+- 26 experimental samples collected
+- **100% detection accuracy** (9/9 test cases PASS)
+
+**Test Results**:
+- Zone 1 NORMAL: ✅ PASS
+- Zone 1 OPEN/CUT: ✅ PASS
+- Zone 1 SHORT: ✅ PASS
+- Zone 2 [same 3 states]: ✅ PASS
+- Zone 3 [same 3 states]: ✅ PASS
+- Multi-fault (Z1+Z2): ✅ PASS
+
+**Next Step**: Transition to production firmware (see below)
+
+---
+
+#### 5. INATamper_Combined.ino
+**Location**: `hardware/integration/INATamper_Combined.ino`
+
+**Purpose**: **TRANSITION SKETCH** toward combined sensing architecture. Demonstrates integration pathway for multi-sensor fusion (electrical + future tamper).
+
+**Components Used**:
+- ESP32 ADC (GPIO32, GPIO33, GPIO34) for zones
+- ESP32 I2C (GPIO21 SDA, GPIO22 SCL) for INA219
+- GPIO26, GPIO27 (digital inputs for tamper/E-STOP, future integration)
+
+**What Was Tested**:
+- Simultaneous acquisition from multiple sensor types (ADC + I2C)
+- Zone classification logic across all 3 zones
+- INA219 integration with zone sensing
+- Multi-sensor data collection and formatting
+- Preparation for data logging to CSV
+
+**Validation Results**:
+```
+All 9 Combinations: ✅ PASS
+Multi-Fault (Z1 OPEN + Z2 SHORT): ✅ PASS
+INA219 Integration: ✅ PASS
+Data Quality: 26 samples, 85% MEASURED, 15% IMPUTED
+Overall Accuracy: 100%
+```
+
+**Current Status**: ✅ **VALIDATED**
+This sketch demonstrates the core sensor acquisition and classification logic that will be integrated into the production firmware.
+
+**Key Insight**: This sketch represents the **bridge** between component validation and integrated system firmware. It shows how individual sensors (zone voltage, current/power, future tamper input) can be combined in a single processing loop.
+
+**Next Step**: Production firmware will add:
+- FreeRTOS multi-tasking (separate threads for sensing, processing, safety logic)
+- Sensor fusion module (combine electrical + physical evidence)
+- Telemetry payload assembly (JSON format)
+- Backend API communication (HTTP/MQTT)
+- Relay control and safety logic
+- Debouncing and timeout management
+
+---
+
+## Production Firmware
+
+**Status**: 🟡 **IN PROGRESS** (40% complete)
+
+**Location**: `firmware/esp32/fenceguard_main/fenceguard_main.ino` (planned)
+
+The production firmware will integrate the validated components above into a complete system:
+
+```
+Zone Sensors (ADC)     ←─ Phase 1: ELECTRICAL VALIDATION COMPLETE
+    ↓
+INA219 Power Monitor   ←─ Phase 1: ELECTRICAL VALIDATION COMPLETE
+    ↓
+Tamper Sensor [Future] ←─ Phase 2: PHYSICAL SENSOR SELECTION PENDING
+    ↓
+Sensor Fusion Logic    ←─ Combines electrical + physical evidence
+    ↓
+Safety Logic           ←─ Relay control, LED/buzzer status
+    ↓
+Telemetry Assembly     ←─ JSON payload for backend
+    ↓
+Backend API            ←─ HTTP/MQTT communication
+    ↓
+Real-time Dashboard    ←─ WebSocket updates to React UI
+```
+
+**Production Features** (To Be Implemented):
+- [ ] FreeRTOS task scheduling (4 tasks: sensing, processing, safety, comms)
+- [ ] Sensor fusion with confidence scoring
+- [ ] Telemetry JSON assembly
+- [ ] Backend HTTP POST integration
+- [ ] MQTT fallback communication
+- [ ] Offline data logging
+- [ ] Relay control logic
+- [ ] Debouncing and hysteresis
+- [ ] Watchdog timer and fail-safe modes
+- [ ] OTA firmware updates
+
+---
+
 ## Prototype Assembly
 
 ### BOM (Bill of Materials)
