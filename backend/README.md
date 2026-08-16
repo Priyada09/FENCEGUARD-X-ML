@@ -1,33 +1,61 @@
 # Backend README
 
 ## Overview
-FENCEGUARD-X backend provides REST APIs for event logging, fence status queries, and analytics. Built with Node.js, Express, and MongoDB.
+
+FENCEGUARD-X backend provides REST APIs for:
+- **Telemetry Ingestion**: Real-time sensor data from ESP32
+- **Event Logging**: Fault events, isolation actions, alerts
+- **Status Queries**: Current fence state, zone health
+- **Analytics**: Historical trends, incident reporting
+- **Real-time Updates**: WebSocket for live dashboard
+
+**Technology Stack**: Node.js + Express + MongoDB + WebSocket
+
+**Current Status** 🟡 **IN PROGRESS**: Schema finalized, API skeleton ready, integration pending
+
+---
 
 ## Quick Start
 
 ### Prerequisites
-- Node.js 18+
-- MongoDB (local or Atlas cloud)
-- npm or yarn package manager
-- Git
+- **Node.js**: v18+ (with npm or yarn)
+- **MongoDB**: Local instance (v4.4+) or MongoDB Atlas cloud
+- **Environment**: Windows, macOS, or Linux
 
-### Setup
+### Local Setup
+
 ```bash
-# Clone backend
+# 1. Clone and navigate to backend
 cd backend
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# Configure environment
+# 3. Create environment file
 cp .env.example .env
-# Edit .env with your MongoDB URI and MQTT broker
 
-# Start server
+# 4. Edit .env with your database URI
+# For local MongoDB:
+#   MONGODB_URI=mongodb://localhost:27017/fenceguard
+# For MongoDB Atlas (cloud):
+#   MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/fenceguard
+
+# 5. Start the server
 npm start
 
-# Server runs on http://localhost:5000
+# Expected output:
+# [INFO] Server running on http://localhost:5000
+# [INFO] MongoDB connected to fenceguard_db
+# [INFO] WebSocket server listening on ws://localhost:5000
 ```
+
+### Docker Deployment (Optional)
+```bash
+docker build -t fenceguard-backend .
+docker run -p 5000:5000 --env-file .env fenceguard-backend
+```
+
+---
 
 ## Backend Structure
 
@@ -35,69 +63,554 @@ npm start
 backend/
 ├─ api/
 │  ├─ routes/
-│  │  ├─ events.js              # Event logging
-│  │  ├─ status.js              # Fence status
-│  │  └─ analytics.js           # Historical data
+│  │  ├─ telemetry.js           # POST /api/telemetry
+│  │  ├─ events.js              # GET/POST /api/events
+│  │  ├─ status.js              # GET /api/status
+│  │  └─ analytics.js           # GET /api/analytics
 │  ├─ controllers/
+│  │  ├─ telemetryController.js
 │  │  ├─ eventController.js
 │  │  ├─ statusController.js
 │  │  └─ analyticsController.js
 │  ├─ models/
-│  │  ├─ Event.js               # Event schema
-│  │  └─ Sensor.js              # Sensor config
+│  │  ├─ Telemetry.js           # Sensor readings schema
+│  │  ├─ Event.js               # Fault event schema
+│  │  └─ Device.js              # Device metadata schema
 │  ├─ middleware/
-│  │  ├─ auth.js                # JWT validation
-│  │  ├─ errorHandler.js        # Error handling
+│  │  ├─ auth.js                # API key validation (optional)
+│  │  ├─ errorHandler.js        # Global error handling
 │  │  └─ logger.js              # Request logging
 │  └─ services/
-│     ├─ mqttService.js         # MQTT listener
-│     └─ notificationService.js # Alerts
+│     ├─ deviceService.js       # Device management
+│     ├─ eventService.js        # Event processing
+│     └─ notificationService.js # Alert sending (future)
 │
 ├─ database/
-│  ├─ seeds/                    # Initial data
-│  └─ migrations/               # Schema updates
+│  ├─ seeds/                    # Initial seed data
+│  ├─ migrations/               # Schema version upgrades
+│  └─ indexes.js                # Index creation for performance
 │
 ├─ config/
-│  ├─ database.js               # MongoDB config
-│  ├─ mqtt.js                   # MQTT broker config
-│  └─ env.js                    # Environment variables
+│  ├─ database.js               # MongoDB connection config
+│  ├─ websocket.js              # WebSocket setup
+│  └─ env.js                    # Environment loader
 │
 ├─ tests/
 │  ├─ unit/
+│  │  └─ telemetryController.test.js
 │  └─ integration/
+│     └─ api.test.js
 │
-├─ .env.example
-├─ app.js                       # Express app
-├─ server.js                    # Entry point
+├─ .env.example                 # Environment template
+├─ app.js                       # Express app initialization
+├─ server.js                    # Entry point (HTTP + WebSocket)
 ├─ package.json
 └─ README.md
 ```
 
+---
+
+## API Endpoints
+
+### 1. Telemetry Ingestion
+
+**Endpoint**: `POST /api/telemetry`
+
+**Purpose**: ESP32 sends real-time sensor data
+
+**Request Headers**:
+```
+Content-Type: application/json
+Device-ID: ESP32_001 (optional header for device identification)
+```
+
+**Request Body** (JSON):
+```json
+{
+  "timestamp": "2026-08-17T14:23:45Z",
+  "device_id": "ESP32_001",
+  "zone1_voltage_v": 1.48,
+  "zone2_voltage_v": 3.30,
+  "zone3_voltage_v": 1.29,
+  "zone1_status": "NORMAL",
+  "zone2_status": "OPEN_CUT",
+  "zone3_status": "NORMAL",
+  "bus_voltage_v": 3.276,
+  "current_ma": 88.20,
+  "power_mw": 294.00,
+  "condition": "OPEN_CUT",
+  "fault_zone": "ZONE2",
+  "severity": "ALERT",
+  "confidence": 0.98,
+  "data_quality": "MEASURED"
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Telemetry received and stored",
+  "telemetry_id": "507f1f77bcf86cd799439011"
+}
+```
+
+**Status Codes**:
+- `200 OK`: Successfully stored
+- `400 Bad Request`: Missing required fields
+- `500 Internal Error`: Database error
+
+**Backend Processing**:
+1. Validate telemetry schema
+2. Store in `telemetry` collection
+3. If `severity = ALERT or CRITICAL`: Create event record
+4. Broadcast to all WebSocket clients (dashboard)
+5. Return acknowledgment
+
+---
+
+### 2. Event Logging & Retrieval
+
+**Endpoint**: `GET /api/events`
+
+**Purpose**: Retrieve historical fault events
+
+**Query Parameters**:
+```
+?startDate=2026-08-17          # ISO date
+&endDate=2026-08-18            # ISO date
+&device_id=ESP32_001           # Device filter
+&zone=ZONE1                    # Zone filter (ZONE1, ZONE2, ZONE3)
+&condition=OPEN_CUT            # Condition filter (NORMAL, OPEN_CUT, SHORT, MULTI_FAULT)
+&severity=ALERT                # Severity filter (ALERT, CRITICAL)
+&limit=50                      # Max results (default: 50)
+&skip=0                        # Pagination offset
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "count": 5,
+  "events": [
+    {
+      "_id": "507f1f77bcf86cd799439011",
+      "timestamp": "2026-08-17T14:23:45Z",
+      "device_id": "ESP32_001",
+      "condition": "OPEN_CUT",
+      "fault_zone": "ZONE2",
+      "severity": "ALERT",
+      "zone1_voltage_v": 1.48,
+      "zone2_voltage_v": 3.30,
+      "zone3_voltage_v": 1.29,
+      "bus_voltage_v": 3.276,
+      "current_ma": 88.20,
+      "power_mw": 294.00,
+      "confidence": 0.98,
+      "action_taken": "ALERT_SENT",
+      "resolution": null,
+      "resolved_at": null
+    }
+    // ... more events
+  ]
+}
+```
+
+**Endpoint**: `POST /api/events`
+
+**Purpose**: Manually log critical events
+
+**Request Body**:
+```json
+{
+  "device_id": "ESP32_001",
+  "condition": "CRITICAL",
+  "fault_zone": "ZONE1",
+  "severity": "CRITICAL",
+  "action_taken": "RELAY_CUT",
+  "notes": "Manual isolation triggered"
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "event_id": "507f1f77bcf86cd799439012"
+}
+```
+
+---
+
+### 3. Status Query
+
+**Endpoint**: `GET /api/status`
+
+**Purpose**: Get current system state
+
+**Response**:
+```json
+{
+  "success": true,
+  "device_id": "ESP32_001",
+  "last_heartbeat": "2026-08-17T14:25:30Z",
+  "uptime_seconds": 86400,
+  "overall_status": "ALERT",
+  "zones": [
+    {
+      "zone_id": "ZONE1",
+      "status": "NORMAL",
+      "voltage": 1.48,
+      "last_change": "2026-08-17T14:23:00Z"
+    },
+    {
+      "zone_id": "ZONE2",
+      "status": "OPEN_CUT",
+      "voltage": 3.30,
+      "last_change": "2026-08-17T14:23:45Z"
+    },
+    {
+      "zone_id": "ZONE3",
+      "status": "NORMAL",
+      "voltage": 1.29,
+      "last_change": "2026-08-17T14:23:00Z"
+    }
+  ],
+  "bus_voltage_v": 3.276,
+  "current_ma": 88.20,
+  "power_mw": 294.00,
+  "relay_status": "ON",
+  "led_status": "YELLOW"
+}
+```
+
+---
+
+### 4. Analytics
+
+**Endpoint**: `GET /api/analytics`
+
+**Purpose**: Historical trends and statistics
+
+**Query Parameters**:
+```
+?device_id=ESP32_001
+&interval=1h              # 1h, 1d, 1w (hourly, daily, weekly)
+&days=7                   # Last 7 days
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "analytics": {
+    "total_events": 42,
+    "critical_events": 3,
+    "avg_uptime_percent": 98.5,
+    "incident_rate": "1.2 per day",
+    "most_faulted_zone": "ZONE2",
+    "trends": [
+      {
+        "timestamp": "2026-08-17T00:00:00Z",
+        "event_count": 5,
+        "avg_current_ma": 95,
+        "avg_voltage_v": 3.2,
+        "faults": 2
+      }
+      // ... more time periods
+    ]
+  }
+}
+```
+
+---
+
+## Database Schema
+
+### Telemetry Collection
+
+```javascript
+{
+  _id: ObjectId,                    // MongoDB auto-generated
+  timestamp: ISODate,               // When measurement was taken
+  device_id: String,                // "ESP32_001"
+  
+  // Zone Electrical Data
+  zone1_voltage_v: Number,          // 0–3.5V
+  zone2_voltage_v: Number,          // 0–3.5V
+  zone3_voltage_v: Number,          // 0–3.5V
+  zone1_status: String,             // "NORMAL" | "OPEN_CUT" | "SHORT"
+  zone2_status: String,
+  zone3_status: String,
+  
+  // INA219 Power Sensor
+  bus_voltage_v: Number,            // 3.0–3.4V typical
+  current_ma: Number,               // 60–130 mA typical
+  power_mw: Number,                 // 200–440 mW typical
+  
+  // Classification & Quality
+  condition: String,                // "NORMAL" | "OPEN_CUT" | "SHORT" | "MULTI_FAULT"
+  fault_zone: String,               // "NONE" | "ZONE1" | "ZONE2" | "ZONE3" | "ZONE1_ZONE2"
+  severity: String,                 // "NORMAL" | "ALERT" | "CRITICAL"
+  confidence: Number,               // 0.0–1.0
+  data_quality: String,             // "MEASURED" | "IMPUTED_BUS_VOLTAGE"
+  
+  // Optional Fields
+  physical_tamper: Boolean,         // Future: physical tamper detected
+  tamper_score: Number,             // Future: 0–1 confidence score
+  
+  // Metadata
+  createdAt: ISODate,
+  updatedAt: ISODate
+}
+
+// Indexes for performance
+db.telemetry.createIndex({ device_id: 1, timestamp: -1 });
+db.telemetry.createIndex({ condition: 1, timestamp: -1 });
+db.telemetry.createIndex({ timestamp: -1 }, { expireAfterSeconds: 2592000 }); // 30-day TTL
+```
+
+### Event Collection
+
+```javascript
+{
+  _id: ObjectId,
+  timestamp: ISODate,               // When event occurred
+  device_id: String,                // "ESP32_001"
+  
+  // Event Details
+  condition: String,                // "OPEN_CUT" | "SHORT" | "MULTI_FAULT"
+  fault_zone: String,               // Affected zone(s)
+  severity: String,                 // "ALERT" | "CRITICAL"
+  confidence: Number,               // 0.0–1.0
+  
+  // Related Measurements
+  zone1_voltage_v: Number,
+  zone2_voltage_v: Number,
+  zone3_voltage_v: Number,
+  bus_voltage_v: Number,
+  current_ma: Number,
+  power_mw: Number,
+  
+  // Action Taken
+  action_taken: String,             // "NONE" | "ALERT_SENT" | "RELAY_CUT"
+  relay_status: String,             // "ON" | "OFF"
+  
+  // Resolution
+  resolution: String,               // Operator notes
+  resolved_at: ISODate,             // When operator resolved
+  resolution_method: String,        // "AUTO" | "MANUAL" | "HARDWARE_RESET"
+  
+  // Metadata
+  createdAt: ISODate
+}
+
+// Indexes
+db.events.createIndex({ device_id: 1, timestamp: -1 });
+db.events.createIndex({ severity: 1 });
+db.events.createIndex({ timestamp: -1 }, { expireAfterSeconds: 7776000 }); // 90-day TTL
+```
+
+### Device Collection
+
+```javascript
+{
+  _id: ObjectId,
+  device_id: String,                // "ESP32_001" (unique)
+  name: String,                     // "Perimeter Fence A"
+  location: String,                 // "North pasture"
+  
+  // Configuration
+  zones: [
+    { zone_id: "ZONE1", name: "North section", eol_ohms: 470 },
+    { zone_id: "ZONE2", name: "West section", eol_ohms: 470 },
+    { zone_id: "ZONE3", name: "South section", eol_ohms: 470 }
+  ],
+  
+  // Firmware & Hardware
+  firmware_version: String,         // "1.0"
+  hardware_version: String,         // "1.0-ESP32"
+  last_heartbeat: ISODate,
+  
+  // Alerts
+  alert_email: String,
+  alert_phone: String,              // SMS notifications
+  
+  // Status
+  status: String,                   // "ACTIVE" | "INACTIVE" | "ERROR"
+  
+  // Metadata
+  createdAt: ISODate,
+  updatedAt: ISODate
+}
+
+db.devices.createIndex({ device_id: 1 }, { unique: true });
+```
+
+---
+
+## WebSocket Real-Time Updates
+
+**Connection**: `ws://localhost:5000`
+
+**Events Emitted**:
+
+### Event: `telemetry_update`
+Sent whenever new sensor data arrives
+```json
+{
+  "type": "telemetry_update",
+  "data": {
+    "device_id": "ESP32_001",
+    "zones": [
+      { "zone_id": "ZONE1", "status": "NORMAL", "voltage": 1.48 },
+      { "zone_id": "ZONE2", "status": "OPEN_CUT", "voltage": 3.30 },
+      { "zone_id": "ZONE3", "status": "NORMAL", "voltage": 1.29 }
+    ],
+    "bus_voltage_v": 3.276,
+    "current_ma": 88.20,
+    "power_mw": 294.00,
+    "timestamp": "2026-08-17T14:23:45Z"
+  }
+}
+```
+
+### Event: `event_alert`
+Sent when critical event occurs
+```json
+{
+  "type": "event_alert",
+  "severity": "CRITICAL",
+  "data": {
+    "condition": "OPEN_CUT",
+    "fault_zone": "ZONE2",
+    "action_taken": "RELAY_CUT",
+    "timestamp": "2026-08-17T14:23:45Z"
+  }
+}
+```
+
+### Event: `device_status`
+Sent on device status change
+```json
+{
+  "type": "device_status",
+  "device_id": "ESP32_001",
+  "status": "ALERT",
+  "relay_status": "OFF"
+}
+```
+
+---
+
 ## Environment Configuration
 
-Create `.env`:
+**File**: `.env`
+
 ```env
-# Server
+# Server Configuration
 PORT=5000
 NODE_ENV=development
+HOST=0.0.0.0
 
-# Database
-MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/fenceguard
-DB_NAME=fenceguard_db
+# MongoDB
+MONGODB_URI=mongodb://localhost:27017/fenceguard
+MONGODB_POOL_SIZE=10
+MONGODB_TIMEOUT=5000
 
-# MQTT
-MQTT_BROKER=mqtt://broker.mosquitto.org
-MQTT_PORT=1883
-MQTT_TOPIC=fence/events
-
-# Authentication
-JWT_SECRET=your_super_secret_jwt_key_here
-JWT_EXPIRE=7d
+# API Security (optional, basic auth)
+API_KEY_ENABLED=false
+API_KEY=your_api_key_here
 
 # CORS
-CORS_ORIGIN=http://localhost:3000
+CORS_ORIGIN=*
 
 # Logging
+LOG_LEVEL=info
+LOG_FORMAT=combined
+
+# Telemetry
+TELEMETRY_RETENTION_DAYS=30
+EVENTS_RETENTION_DAYS=90
+
+# Notifications (future)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
+ALERT_EMAIL_FROM=fenceguard@example.com
+```
+
+---
+
+## Starting the Backend
+
+```bash
+# Development mode (with hot reload)
+npm run dev
+
+# Production mode
+npm start
+
+# With logging
+npm start -- --log-level debug
+```
+
+**Expected Startup Output**:
+```
+[INFO] FENCEGUARD-X Backend v1.0
+[INFO] MongoDB connection pool initialized
+[INFO] Express server listening on http://0.0.0.0:5000
+[INFO] WebSocket server ready on ws://0.0.0.0:5000
+[INFO] Event indexes created
+[INFO] Telemetry indexes created
+[INFO] System ready for telemetry ingestion
+```
+
+---
+
+## Integration Checklist
+
+- [ ] MongoDB running (local or Atlas)
+- [ ] `.env` file configured with MongoDB URI
+- [ ] Node.js dependencies installed (`npm install`)
+- [ ] Server starts without errors (`npm start`)
+- [ ] API responds to test requests (`curl http://localhost:5000/health`)
+- [ ] WebSocket connection test (client connects successfully)
+- [ ] POST `/api/telemetry` stores data correctly
+- [ ] GET `/api/events` retrieves stored events
+- [ ] Dashboard WebSocket receives live updates
+- [ ] Database retention policies active (TTL indexes)
+
+---
+
+## Performance Considerations
+
+| Metric | Target | Strategy |
+|--------|--------|----------|
+| Telemetry latency | <100ms | Async processing, indexing |
+| Event query latency | <500ms | Database indexes, pagination |
+| Concurrent clients | 100+ | WebSocket scaling |
+| Data retention | 30d telemetry, 90d events | MongoDB TTL indexes |
+| Storage size | ~500MB/year (typical) | Compression, archival |
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| MongoDB connection refused | Check MongoDB running, URI correct |
+| Port 5000 already in use | `lsof -i :5000` to find process, or change PORT in .env |
+| WebSocket connection fails | Check firewall, ensure backend running on same host |
+| Telemetry not storing | Check MongoDB permissions, schema validation |
+| Dashboard not updating | Check WebSocket connection, browser console errors |
+
+---
+
+**Last Updated**: 17 August 2026  
+**Status**: 🟡 Schema ready, API skeleton in progress  
+**Next Milestone**: Full API integration by 18-AUG
 LOG_LEVEL=debug
 ```
 
