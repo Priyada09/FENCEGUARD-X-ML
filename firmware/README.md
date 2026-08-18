@@ -836,5 +836,5 @@ Upload new firmware from Arduino IDE: Tools → Port → esp32 OTA
 
 ---
 
-**Contact**: Jayesh (Firmware Lead)
-**Last Updated**: 14 August 2026
+**Contact**: Anup Patil (Hardware + Firmware Owner)
+**Last Updated**: 19 August 2026
