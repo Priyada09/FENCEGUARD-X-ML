@@ -127,7 +127,7 @@ At this stage, ok to have:
 
 | Integration | Description | Modules | Owner |
 |-------------|-------------|---------|-------|
-| INT-01 | Sensors → Firmware processing | HW + FW | Jayesh |
+| INT-01 | Sensors → Firmware processing | HW + FW | Anup |
 | INT-02 | Firmware → ML inference | FW + ML | Priyada |
 | INT-03 | Firmware → Backend API | FW + BE | Alok Kumar |
 
