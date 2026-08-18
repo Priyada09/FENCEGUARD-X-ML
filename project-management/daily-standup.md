@@ -25,7 +25,7 @@ Use this format every day at 10:00 AM (or async updates in Slack/GitHub).
 ═════════════════════════════════════════
 
 ─────────────────────────────────────────
-ANUP — IoT & Automation
+ANUP — Hardware + Firmware
 ─────────────────────────────────────────
 
 DONE TODAY:
@@ -42,27 +42,6 @@ DEPENDENCIES NEEDED:
 
 CONFIDENCE LEVEL: 🟢 / 🟡 / 🔴
 (Green = on track, Yellow = slight concern, Red = critical issue)
-
-EVIDENCE:
-(commit hash, screenshot, test result, or link)
-
-─────────────────────────────────────────
-JAYESH — Firmware
-─────────────────────────────────────────
-
-DONE TODAY:
-- 
-
-CURRENTLY WORKING ON:
-- 
-
-PENDING / BLOCKED:
-- 
-
-DEPENDENCIES NEEDED:
-- 
-
-CONFIDENCE LEVEL: 🟢 / 🟡 / 🔴
 
 EVIDENCE:
 (commit hash, screenshot, test result, or link)
@@ -220,11 +199,11 @@ CURRENTLY WORKING ON:
 
 PENDING / BLOCKED:
 - Need 300 TAMPER-class samples from Anup's hardware
-- Waiting for Jayesh's firmware to output structured JSON
+- Waiting for Anup's firmware output and the sensor-fusion feature stream
 
 DEPENDENCIES NEEDED:
-- Anup: Please provide tampered-sensor simulation by 16-AUG 10:00 AM
-- Jayesh: Firmware feature output by 15-AUG 20:00
+- Anup: Please provide tampered-sensor data by 16-AUG 10:00 AM
+- Anup: Firmware feature output by 15-AUG 20:00
 
 CONFIDENCE LEVEL: 🟡
 (Slight concern: not enough tamper data yet, but can train on synthetic perturbations)
