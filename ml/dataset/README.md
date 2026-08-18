@@ -283,8 +283,8 @@ Safe Low-Voltage Lab Demonstration
 ## Contact & Questions
 
 **Dataset Owner**: Priyada (ML Lead)  
-**Hardware Owner**: Anup (IoT & Automation Lead)  
-**Firmware Owner**: Jayesh (Firmware Lead)  
+**Hardware Owner**: Anup Patil (Hardware + Firmware Owner)  
+**Firmware Owner**: Anup Patil (Hardware + Firmware Owner)  
 
 For dataset questions, corrections, or additional samples, please contact the team via GitHub issues.
 
