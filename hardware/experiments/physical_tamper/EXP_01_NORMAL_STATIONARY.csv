@@ -1,4 +1,4 @@
-timestamp_ms,zone1_v,zone2_v,zone3_v,bus_voltage_v,current_ma,power_mw,ax,ay,az,gx,gy,gz
+timestamp_ms,zone1_v,zone2_v,zone3_v,bus_voltage_v,current_ma,power_mw,ax,ay,az,gx,gy,gz,label
 55740,1.562,1.43,1.467,3.276,0.1,0.0,-11764,792,9852,829,375,27,NORMAL_STATIONARY
 55845,1.543,1.428,1.467,3.276,0.3,0.0,-11768,784,9708,854,344,5,NORMAL_STATIONARY
 55950,1.561,1.429,1.462,3.276,0.4,0.0,-11772,780,9700,853,331,33,NORMAL_STATIONARY
