@@ -84,10 +84,8 @@ All teams can proceed with development.
    - Impact: HIGH (blocks firmware sensor fusion)
 
 2. **ML Model Baseline Performance** (Priyada)
-   - Current dataset size: Only 26 samples
-   - Risk: Insufficient for high-accuracy model
-   - Mitigation: Baseline + deterministic fallback hybrid approach
-   - Action: Conduct EDA by 18-AUG, identify best features
+   - Current dataset size: Real experimental dataset collected across physical & electrical tests
+   - Strategy: Feature extraction & baseline classification
 
 3. **Integration Window** (All)
    - Only 3 days to integrate all modules
@@ -139,7 +137,7 @@ All teams can proceed with development.
 | Milestone | Target | Status | Notes |
 |-----------|--------|--------|-------|
 | **M1: Hardware Validation** | 17-AUG | ✅ **DONE** | 3-zone electrical + INA219 validated |
-| **M2: Dataset Ready** | 17-AUG | ✅ **DONE** | 26 samples, documented quality |
+| **M2: Dataset Ready** | 17-AUG | ✅ **DONE** | Empirical experimental datasets collected, documented quality |
 | **M3: Physical Tamper HW** | 17-AUG 18:00 | 🟡 **DUE TODAY** | Sensor selection + integration plan |
 | **M4: Firmware Sensor Fusion** | 18-AUG 12:00 | 🔄 **IN PROGRESS** | Electrical + physical data merging |
 | **M5: ML Baseline + Feature Analysis** | 18-AUG 12:00 | 🔄 **IN PROGRESS** | Decision Tree, Random Forest, Logistic Regression |
@@ -287,14 +285,18 @@ Before proceeding with feature implementation:
 
 **When presenting on 20-AUG**:
 
-1. **Emphasize Experimental Validation**
-   - "We tested all 9 combinations of 3 zones × 3 electrical conditions"
-   - "Achieved 100% fault localization accuracy on prototype"
-   - "Here's our real dataset: 26 samples from actual hardware"
+1. **Emphasize- ✅ Experimental dataset: Raw empirical datasets collected from 3-zone prototype
+- ✅ Validation report: Electrical fault states experimentally validated across the 3-zone prototype
 
-2. **Be Honest About Limitations**
-   - "This is a safe 3.3V lab demonstration"
-   - "Dataset is small (26 samples) but real, not synthetic"
+---
+
+## 💡 PRESENTATION HIGHLIGHTS (For Pitch)
+
+1. **Hardware Validation Story**:
+   - "Built and validated a 3-zone electrical integrity monitoring prototype"
+   - "Here's our real dataset from actual prototype hardware testing"
+   - "Physical MPU6050 6-DOF sensor integrated; raw motion streams captured"
+   - "Dataset is real hardware empirical data, preserving loose connection logs"
    - "We chose practical simplicity over unnecessary complexity"
 
 3. **Show the Path Forward**

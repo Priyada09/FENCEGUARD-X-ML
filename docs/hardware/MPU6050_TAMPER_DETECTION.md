@@ -10,7 +10,7 @@ The MPU6050 is communicating and returning six raw measurements:
 - `gy`
 - `gz`
 
-This is confirmed by the real experimental data in `data/raw/tamper_experiments/EXP_01_NORMAL_STATIONARY.csv`.
+This is confirmed by the real experimental data in `hardware/experiments/physical_tamper/EXP_01_NORMAL_STATIONARY.csv` and `EXP_02_PHYSICAL_EXPERIMENTS_LABELED.csv`.
 
 ## Important interpretation rule
 
@@ -67,9 +67,9 @@ The project should treat physical movement as suspicious when there is:
 - Preserve the stationary baseline dataset as the reference for drift and orientation.
 - Do not claim final tamper detection accuracy until real experiments are collected and assessed.
 
-## TODO
+## Status Summary
 
-- [TODO] Capture EXP_02_LIGHT_VIBRATION data to model normal disturbance.
-- [TODO] Capture EXP_03_PHYSICAL_TAMPER data to model real tamper signatures.
-- [TODO] Build a fused feature pipeline combining electrical and motion data.
-- [TODO] Train a baseline classifier after enough real data exists.
+- [x] MPU6050 sensor hardware connection and I2C communication verified.
+- [x] Raw motion telemetry captured across physical experiment scenarios.
+- [ ] Sensor-fusion algorithm and temporal feature extraction pipeline implementation.
+- [ ] Baseline ML classifier training and recall evaluation by ML Lead (Priyada).

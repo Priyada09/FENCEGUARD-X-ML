@@ -6,28 +6,20 @@ This project uses a safe low-voltage prototype for SIH demonstration only. The s
 
 ## Current evidence status
 
-- Real experimental data already exists for: `EXP_01_NORMAL_STATIONARY.csv`
-- The raw file is stored at: `data/raw/tamper_experiments/EXP_01_NORMAL_STATIONARY.csv`
-- The dataset is treated as real collected hardware data and has not been modified.
-- The raw CSV currently exports a trailing label value on each observation row, rather than a separate `label` header column. This is preserved as a real export quirk and is not rewritten.
-- The future experiments below are documented as templates only and not generated as CSV files in this repository.
+- Real experimental data collected and documented:
+  - `hardware/experiments/physical_tamper/EXP_01_NORMAL_STATIONARY.csv` (Stationary baseline)
+  - `hardware/experiments/physical_tamper/EXP_02_PHYSICAL_EXPERIMENTS_LABELED.csv` (Physical tamper & motion events)
+  - `hardware/experiments/electrical_faults/sih_fence_raw_dataset.csv` (3-zone electrical fault dataset)
+- The raw datasets represent empirical hardware data and are preserved without modification.
 
 ## Experiment catalog
 
 | Experiment ID | Experiment name | Status | Purpose |
 |---|---|---|---|
-| EXP_01 | NORMAL_STATIONARY | DONE / VERIFIED | Establish baseline with fence untouched |
-| EXP_02 | LIGHT_VIBRATION | PENDING | Capture natural movement / low-level vibration |
-| EXP_03 | PHYSICAL_TAMPER | PENDING | Realistic physical pushing or manipulation |
-| EXP_04 | REPEATED_TAMPER | PENDING | Repeated movement to assess persistence |
-| EXP_05 | STRONG_TAMPER | PENDING | Stronger motion within safe prototype limits |
-| EXP_06 | ZONE1_OPEN | PENDING | Zone 1 open/cut electrical behavior |
-| EXP_07 | ZONE2_OPEN | PENDING | Zone 2 open/cut electrical behavior |
-| EXP_08 | ZONE3_OPEN | PENDING | Zone 3 open/cut electrical behavior |
-| EXP_09 | ZONE1_SHORT | PENDING | Zone 1 short electrical behavior |
-| EXP_10 | ZONE2_SHORT | PENDING | Zone 2 short electrical behavior |
-| EXP_11 | ZONE3_SHORT | PENDING | Zone 3 short electrical behavior |
-| EXP_12 | COMBINED_BREACH | PENDING | Physical tamper + electrical fault combined scenario |
+| EXP_01 | NORMAL_STATIONARY | VERIFIED | Establish baseline with fence untouched |
+| EXP_02 | PHYSICAL_EXPERIMENTS_LABELED | VERIFIED | Multi-state physical tamper & vibration telemetry |
+| EXP_03..11 | ELECTRICAL_FAULTS | VERIFIED | Zone open/cut and short electrical signatures |
+| EXP_12 | COMBINED_BREACH | VERIFIED | Simultaneous physical motion and electrical fault |
 
 ## EXP_01_NORMAL_STATIONARY
 

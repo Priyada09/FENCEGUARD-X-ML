@@ -8,7 +8,7 @@ FENCEGUARD-X hardware prototype demonstrates **safe low-voltage, 3-zone electric
 - 3-zone electrical integrity sensing validated
 - INA219 bus voltage/current/power measurement working
 - 26-sample experimental dataset collected
-- 100% fault detection accuracy across 9-state electrical matrix
+- Electrical fault states experimentally validated across the 3-zone prototype
 - Prototype ready for Phase 2 (physical tamper sensor integration)
 
 ---
@@ -37,16 +37,16 @@ FENCEGUARD-X hardware prototype demonstrates **safe low-voltage, 3-zone electric
 ```
 ESP32 Pin  | Function           | External Connection
 -----------|-------------------|--------------------
-GPIO32     | Zone 1 ADC        | Voltage sensor 1
-GPIO33     | Zone 2 ADC        | Voltage sensor 2
-GPIO34     | Zone 3 ADC        | Voltage sensor 3
-GPIO21     | I2C SDA           | INA219 data line
-GPIO22     | I2C SCL           | INA219 clock line
+GPIO34     | Zone 1 ADC        | Voltage sensor 1
+GPIO35     | Zone 2 ADC        | Voltage sensor 2
+GPIO32     | Zone 3 ADC        | Voltage sensor 3
+GPIO21     | I2C SDA           | INA219 (0x40) & MPU6050 (0x68) data line
+GPIO22     | I2C SCL           | INA219 (0x40) & MPU6050 (0x68) clock line
 GPIO25     | LED Green         | Status (normal)
 GPIO26     | LED Yellow        | Status (alert)
 GPIO27     | LED Red           | Status (critical)
 GPIO14     | Buzzer            | Audible alert
-GPIO22     | Relay Control     | Power isolation
+GPIO23     | Relay Control     | Power isolation
 
 GND        | Common Ground     | All sensors
 3V3        | Power Supply      | All sensors
@@ -127,7 +127,7 @@ Registers: Standard INA219 register map
 
 **Relay Module**:
 ```
-GPIO22 (ESP32)
+GPIO23 (ESP32)
   |
   └─── Relay Driver Transistor
          |
@@ -138,8 +138,8 @@ GPIO22 (ESP32)
 ```
 
 **Behavior**:
-- **GPIO22 = HIGH**: Relay energized, contacts close → **Power ON**
-- **GPIO22 = LOW**: Relay de-energized, contacts open → **Power CUT**
+- **GPIO23 = HIGH**: Relay energized, contacts close → **Power ON**
+- **GPIO23 = LOW**: Relay de-energized, contacts open → **Power CUT**
 
 **Debouncing**:
 ```
@@ -296,7 +296,7 @@ E-STOP : PRESSED
 **Purpose**: Validate 3-zone electrical integrity detection with integrated INA219 monitoring
 
 **Components Used**:
-- ESP32 ADC pins (GPIO32, GPIO33, GPIO34) for zone voltages
+- ESP32 ADC pins (GPIO34, GPIO35, GPIO32) for zone voltages
 - INA219 I2C sensor for bus metrics
 - End-of-line (EOL) resistor-based zone integrity sensing
 
@@ -353,7 +353,7 @@ Power       : 347.91 mW
 **Purpose**: **TRANSITION SKETCH** toward combined sensing architecture. Demonstrates integration pathway for multi-sensor fusion (electrical + future tamper).
 
 **Components Used**:
-- ESP32 ADC (GPIO32, GPIO33, GPIO34) for zones
+- ESP32 ADC (GPIO34, GPIO35, GPIO32) for zones
 - ESP32 I2C (GPIO21 SDA, GPIO22 SCL) for INA219
 - GPIO26, GPIO27 (digital inputs for tamper/E-STOP, future integration)
 
@@ -365,13 +365,9 @@ Power       : 347.91 mW
 - Preparation for data logging to CSV
 
 **Validation Results**:
-```
-All 9 Combinations: ✅ PASS
-Multi-Fault (Z1 OPEN + Z2 SHORT): ✅ PASS
-INA219 Integration: ✅ PASS
-Data Quality: 26 samples, 85% MEASURED, 15% IMPUTED
-Overall Accuracy: 100%
-```
+- ✅ Electrical fault states experimentally validated across all 9 test matrix combinations
+- ✅ Fault localization: Correctly identified affected zone(s) across test cases
+- ✅ Data Quality: Raw dataset preserved, loose breadboard jumper anomalies flagged as IMPUTED_BUS_VOLTAGE
 
 **Current Status**: ✅ **VALIDATED**
 This sketch demonstrates the core sensor acquisition and classification logic that will be integrated into the production firmware.
@@ -454,12 +450,12 @@ Real-time Dashboard    ←─ WebSocket updates to React UI
 [Breadboard schematic diagram to be added]
 
 Key Connections:
-1. ESP32 GPIO32/33/34 → Zone voltage dividers (R1 + R2)
-2. ESP32 GPIO21/22 → INA219 (I2C SDA/SCL)
+1. ESP32 GPIO34/35/32 → Zone voltage dividers (R1 + R2)
+2. ESP32 GPIO21/22 → INA219 & MPU6050 (I2C SDA/SCL)
 3. INA219 → Shunt resistor → Load → GND
 4. ESP32 GPIO25/26/27 → LEDs (with 220Ω current limiting)
 5. ESP32 GPIO14 → Buzzer (through transistor driver)
-6. ESP32 GPIO22 → Relay coil (through TIP31 transistor)
+6. ESP32 GPIO23 → Relay coil (through transistor driver)
 7. Relay NO contacts → Fence load power path
 8. All grounds connected to single point (star configuration)
 ```
@@ -533,71 +529,39 @@ SHORT state:
 
 ## Experimental Validation Results
 
+Electrical fault states experimentally validated across the 3-zone prototype.
+
 ### Test Matrix (All 9 Combinations)
 
-| # | Zone 1 | Zone 2 | Zone 3 | Expected State | Observed | Confidence |
-|---|--------|--------|--------|----------------|----------|------------|
-| 1 | NORMAL | NORMAL | NORMAL | NORMAL | ✅ PASS | 100% |
-| 2 | OPEN | NORMAL | NORMAL | ALERT (Z1) | ✅ PASS | 100% |
-| 3 | SHORT | NORMAL | NORMAL | CRITICAL (Z1) | ✅ PASS | 100% |
-| 4 | NORMAL | OPEN | NORMAL | ALERT (Z2) | ✅ PASS | 100% |
-| 5 | NORMAL | SHORT | NORMAL | CRITICAL (Z2) | ✅ PASS | 100% |
-| 6 | NORMAL | NORMAL | OPEN | ALERT (Z3) | ✅ PASS | 100% |
-| 7 | NORMAL | NORMAL | SHORT | CRITICAL (Z3) | ✅ PASS | 100% |
-| 8 | OPEN | SHORT | NORMAL | CRITICAL (Z1+Z2) | ✅ PASS | 100% |
-| 9 | NORMAL | NORMAL | NORMAL | NORMAL (Repeat) | ✅ PASS | 100% |
+| # | Zone 1 | Zone 2 | Zone 3 | Expected State | Observed |
+|---|--------|--------|--------|----------------|----------|
+| 1 | NORMAL | NORMAL | NORMAL | NORMAL | ✅ PASS |
+| 2 | OPEN | NORMAL | NORMAL | ALERT (Z1) | ✅ PASS |
+| 3 | SHORT | NORMAL | NORMAL | CRITICAL (Z1) | ✅ PASS |
+| 4 | NORMAL | OPEN | NORMAL | ALERT (Z2) | ✅ PASS |
+| 5 | NORMAL | SHORT | NORMAL | CRITICAL (Z2) | ✅ PASS |
+| 6 | NORMAL | NORMAL | OPEN | ALERT (Z3) | ✅ PASS |
+| 7 | NORMAL | NORMAL | SHORT | CRITICAL (Z3) | ✅ PASS |
+| 8 | OPEN | SHORT | NORMAL | CRITICAL (Z1+Z2) | ✅ PASS |
+| 9 | NORMAL | NORMAL | NORMAL | NORMAL (Repeat) | ✅ PASS |
 
-**Overall Accuracy**: 100% (9/9 correct)  
-**False Positives**: 0  
-**False Negatives**: 0
-
-### Dataset Collected
-
-**File**: `ml/dataset/raw/sih_fence_raw_dataset.csv`
-
-**Statistics**:
-- Total samples: 26
-- Measured: 22 (85%)
-- Imputed (bus voltage): 4 (15%)
-- Normal state: 2 samples
-- Open faults: 11 samples (44%)
-- Short faults: 12 samples (46%)
-- Multi-fault: 1 sample (4%)
+**Validation Outcome**: All 9 zone combinations (3 zones × 3 states) confirmed on low-voltage bench setup.
 
 ---
 
-## Phase 2: Physical Tamper Detection (PLANNED)
+## Physical Tamper Sensor Status
 
-**Timeline**: 17–18 AUG 2026
+MPU6050 integration COMPLETE; sensor-fusion algorithm and final real-time classification PENDING.
 
-**Objective**: Add hardware to detect physical fence manipulation (climbing, pushing, vibration)
+**Physical Hardware**: MPU6050 6-DOF IMU connected via I2C (`0x68`, SDA GPIO21, SCL GPIO22).
 
-**Sensor Candidates**:
-1. **Accelerometer (ADXL345)**: I2C, detects acceleration (gravity + movement)
-2. **Vibration Sensor**: Passive or analog, detects resonance
-3. **Strain Gauge**: Detects bending force (for climbing)
+**Sensor Data Stream**:
+- Accelerometer raw outputs: `AX`, `AY`, `AZ`
+- Gyroscope raw outputs: `GX`, `GY`, `GZ`
 
-**Selection Criteria**:
-- Cost: < $10
-- Power: < 50 mA
-- Interface: I2C or analog input
-- Weather resistance: Sealed enclosure compatible
-
-**Planned Integration**:
-```
-Accelerometer (I2C)
-  |
-  └─→ FFT analysis (frequency domain)
-       ├─ 1–5 Hz: Likely human climbing/pushing
-       ├─ 0.1–1 Hz: Likely wind or animal
-       ├─ >10 Hz: Unlikely natural source
-       └─ Confidence scoring
-
-Combined with electrical state:
-  - Electrical fault + vibration → HIGH confidence tamper
-  - Vibration only → CHECK patterns
-  - Electrical fault only → Electrical issue only
-```
+**Physical Experiment Datasets Collected**:
+- `EXP_01_NORMAL_STATIONARY.csv` (Stationary baseline)
+- `EXP_02_PHYSICAL_EXPERIMENTS_LABELED.csv` (Light vibration, single push, repeated pushes, strong shaking, and combined breach events)
 
 ---
 
@@ -607,8 +571,8 @@ Combined with electrical state:
 |-------|--------------|----------|
 | Zone voltage = 0V always | Loose connections | Check GPIO pins, resolder breadboard |
 | Zone voltage = 3.3V always | Open circuit in voltage divider | Check R1, R2, connections |
-| INA219 not responding | I2C address conflict, loose wires | Verify address (0x40), check SDA/SCL |
-| Relay doesn't click | GPIO22 not reaching coil driver | Check transistor, relay wiring |
+| INA219 / MPU6050 not responding | I2C address conflict, loose wires | Verify addresses (0x40 INA219, 0x68 MPU6050), check SDA/SCL |
+| Relay doesn't click | GPIO23 not reaching coil driver | Check transistor, relay wiring |
 | LEDs not lighting | GPIO output issue or polarity | Verify GPIO configuration, LED polarity |
 | Fuzzy zone readings | Noise on ADC lines | Add 100nF cap to each ADC input |
 

@@ -25,13 +25,11 @@
 |---|---|---|---|
 | Anup | 3-zone hardware | DONE | Prototype architecture and 3-zone electrical detection are part of the project status and validated hardware work. |
 | Anup | electrical fault testing | DONE | Open and short scenarios are documented as demonstrated. |
-| Anup | MPU6050 integration | DONE | Communication is working; raw motion values are present in the collected CSV. |
-| Anup | normal baseline collection | DONE | `EXP_01_NORMAL_STATIONARY.csv` exists as real data. |
-| Anup | firmware integration | IN PROGRESS | Hardware and firmware ownership are now consolidated under Anup. |
-| Anup | light vibration dataset | PENDING | Next immediate experiment to collect `EXP_02_LIGHT_VIBRATION.csv`. |
-| Anup | physical tamper dataset | PENDING | Requires controlled real-world movement collection. |
-| Anup | combined breach dataset | PENDING | Requires combination of physical movement and electrical fault. |
-| Anup | sensor fusion integration | PENDING | Depends on enough real data and validated feature pipeline. |
+| Anup | MPU6050 integration | DONE | Sensor communication verified and raw 6-DOF telemetry captured across experiments. |
+| Anup | normal baseline collection | DONE | `EXP_01_NORMAL_STATIONARY.csv` exists as real baseline telemetry. |
+| Anup | physical tamper datasets | DONE | `EXP_02_PHYSICAL_EXPERIMENTS_LABELED.csv` collected and preserved under `hardware/experiments/physical_tamper/`. |
+| Anup | firmware integration | IN PROGRESS | Hardware and firmware ownership consolidated under Anup. |
+| Anup | sensor fusion integration | PENDING | Sensor-fusion algorithm and real-time classification pending ML pipeline completion. |
 | Priyada | ML pipeline design | NEXT | Start with raw ingestion, validation, and feature engineering. |
 | Priyada | raw dataset ingestion | NEXT | Ingest the experimental CSVs and validate schema. |
 | Priyada | feature engineering | NEXT | Compute motion and electrical derived features. |

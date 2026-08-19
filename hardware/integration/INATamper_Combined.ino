@@ -86,10 +86,10 @@
   - Add relay control logic (power cut on CRITICAL state)
   - Add safety timeouts and fail-safe modes
   
-  PHASE 2 (Future):
-  -----------------
-  - Integrate accelerometer/vibration sensor for physical tamper detection
-  - Add FFT analysis for frequency-based pattern recognition
+  PHASE 2 (Current / In Progress):
+  -------------------------------
+  - Integrate MPU6050 (0x68) for physical tamper & motion detection
+  - Temporal feature extraction (accel magnitude, gyro magnitude, deltas)
   - Combine electrical + physical evidence in sensor fusion
   - Implement multi-modal confidence scoring
 */

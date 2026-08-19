@@ -57,39 +57,31 @@ ml/
 
 ## Dataset Preparation
 
-### Data Collection
-```bash
-# Simulate fence sensor data
-python training/generate_dataset.py --duration 10 --output dataset/raw/
+### Data Collection & Schema
 
-# Sensor data format:
-# timestamp, current, voltage, temperature, tamper, is_anomaly
-```
+Raw experimental telemetry captured by ESP32:
 
-### Data Processing
-```bash
-# Clean and normalize
-python training/preprocess_dataset.py \
-  --input dataset/raw/ \
-  --output dataset/processed/ \
-  --normalize
+```csv
+timestamp_ms,zone1_v,zone2_v,zone3_v,bus_voltage_v,current_ma,power_mw,ax,ay,az,gx,gy,gz,label
 ```
 
 ### Feature Engineering
+
 ```
 Input Features:
-├─ current_rms         # Root Mean Square current
-├─ current_peak        # Peak current in window
-├─ current_variance    # Variance of current
-├─ voltage_level       # Fence voltage
-├─ voltage_trend       # dV/dt (rate of change)
-├─ temperature         # Ambient temperature
-└─ tamper_state        # Binary tamper flag
+├─ zone1_v, zone2_v, zone3_v  # 3-Zone electrical voltages
+├─ bus_voltage_v, current_ma  # INA219 power telemetry
+├─ power_mw                   # Calculated power (V x I)
+├─ ax, ay, az                 # MPU6050 Accelerometer raw outputs
+├─ gx, gy, gz                 # MPU6050 Gyroscope raw outputs
+├─ accel_magnitude, gyro_mag  # Derived 3D motion magnitudes
+├─ delta_accel, delta_gyro    # Derived temporal motion changes
+└─ rolling_std_accel/gyro     # Derived windowed variance
 
-Target Labels:
-├─ 0: NORMAL (no anomaly)
-├─ 1: ALERT (threshold exceeded)
-└─ 2: CRITICAL (isolation needed)
+Target Classes:
+├─ NORMAL
+├─ ELECTRICAL_FAULT
+├─ PHYSICAL_TAMPER
 ```
 
 ## Model Training

@@ -18,11 +18,13 @@ This document details the hardware components, circuit design, and integration g
 - **Resistors**: 100kΩ + 1kΩ (100:1 ratio)
 - **Accuracy**: ±1% (with 1% tolerance resistors)
 
-### Temperature Sensor (DS18B20)
-- **Range**: -55°C to +125°C
-- **Accuracy**: ±0.5°C
-- **Interface**: 1-Wire protocol
-- **Resolution**: 12-bit (0.0625°C)
+### MPU6050 6-Axis Motion Sensor (IMU)
+- **Functions**: 3-Axis Accelerometer + 3-Axis Gyroscope
+- **Accelerometer Range**: ±2g, ±4g, ±8g, ±16g
+- **Gyroscope Range**: ±250, ±500, ±1000, ±2000 °/s
+- **Interface**: I2C (`0x68` default address, SDA GPIO21, SCL GPIO22)
+- **Voltage Supply**: 3.3V DC (integrated LDO)
+- **Status**: Physical sensor connected; raw 6-DOF telemetry captured across baseline & motion experiments.
 
 ### Tamper Sensor (Reed Switch)
 - **Type**: Magnetic reed switch

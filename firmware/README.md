@@ -217,11 +217,10 @@ Fault Zone:    ZONE2
 Severity:      ALERT
 ```
 
-**Validation Results** (from 26-sample dataset):
-- ✅ Correct state classification: 100% accuracy
-- ✅ Fault localization: Correctly identified affected zone(s) every time
-- ✅ Multi-fault detection: Successfully detected Zone1+Zone2 simultaneous fault
-- ✅ False positives: 0 (in lab conditions)
+**Validation Results**:
+- ✅ Electrical fault states experimentally validated across the 3-zone prototype
+- ✅ Fault localization: Correctly identified affected zone(s) across test cases
+- ✅ Multi-fault detection: Successfully detected Zone 1 + Zone 2 simultaneous fault
 
 ---
 
@@ -518,29 +517,19 @@ void loop() {
 
 ---
 
-## Phase 2: Physical Tamper Integration (PLANNED)
+## Phase 2: Physical Tamper Sensor Status
 
-**Timeline**: After electrical layer validated (17–18 AUG)
+**Status**: MPU6050 integration COMPLETE; sensor-fusion algorithm and final real-time classification PENDING.
 
-**Sensor Options**:
-1. **Accelerometer (ADXL345)**: Detects movement/vibration
-2. **Vibration Sensor**: Resonance analysis
-3. **Strain Gauge**: Force/weight sensing (for climbing)
+**Hardware Platform**: MPU6050 6-DOF IMU (`0x68`, SDA GPIO21, SCL GPIO22).
 
-**Integration Plan**:
-```
-New File: tamper_sensor_driver.cpp
-  ├─ Read accelerometer (I2C)
-  ├─ FFT analysis (frequency detection)
-  ├─ Pattern matching (climbing vs. wind)
-  └─ Output: tamper_confidence (0–100%)
+**Sensor Data Stream**:
+- Accelerometer raw outputs: `AX`, `AY`, `AZ`
+- Gyroscope raw outputs: `GX`, `GY`, `GZ`
 
-Update: sensor_fusion.cpp
-  ├─ Combine electrical + physical data
-  ├─ Rule: electrical fault + sustained vibration → HIGH confidence
-  ├─ Rule: vibration only, no electrical fault → check patterns
-  └─ Output: updated system_state, multimodal_confidence
-```
+**Physical Experiment Datasets Collected**:
+- `EXP_01_NORMAL_STATIONARY.csv` (Stationary baseline)
+- `EXP_02_PHYSICAL_EXPERIMENTS_LABELED.csv` (Light vibration, single push, repeated pushes, strong shaking, and combined breach events)
 
 ---
 
@@ -680,9 +669,9 @@ void task_ml_inference(void *arg) {
 
 ---
 
-**Last Updated**: 17 August 2026  
-**Firmware Version**: 1.0 (Electrical Detection Complete, Physical Tamper Pending)  
-**Next Milestone**: Physical tamper sensor integration by 18-AUG
+**Last Updated**: 19 August 2026  
+**Firmware Version**: 1.0 (Electrical Layer & MPU6050 Sensor Integration Complete)  
+**Next Milestone**: MPU6050 sensor-fusion feature extraction & classifier integration
 - Connect to MQTT broker
 - Publish events: fence/events topic
 - Subscribe to commands: fence/commands topic

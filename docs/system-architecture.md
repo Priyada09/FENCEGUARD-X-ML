@@ -185,19 +185,19 @@ INA219 (I2C) ──→ ESP32 I2C Bus
            └─ Power
 ```
 
-### 2. **Sensing Layer (PHYSICAL) — Phase 2**
+### 2. **Sensing Layer (PHYSICAL)**
 
-**Not yet implemented. TBD candidates**:
-- Accelerometer (ADXL345): Detects fence movement, climbing
-- Vibration sensor: Distinguishes physical tampering from wind
-- Strain gauge: Detects climbing or pushing force
-- Thermal camera: Detects body heat near fence
+**Status**: MPU6050 integration COMPLETE; sensor-fusion algorithm and final real-time classification PENDING.
 
-**Selection Criteria**:
-- Low cost (< $10 per unit)
-- Low power consumption
-- Compatible with ESP32 GPIO/I2C
-- Environmental robustness (rain, heat, dust)
+**Hardware**: MPU6050 6-Axis Motion Sensor (3-Axis Accelerometer + 3-Axis Gyroscope) via I2C (`0x68`, SDA GPIO21, SCL GPIO22).
+
+**Data Channels**:
+- Accelerometer: `AX`, `AY`, `AZ`
+- Gyroscope: `GX`, `GY`, `GZ`
+
+**Physical Experiment Datasets Collected**:
+- `EXP_01_NORMAL_STATIONARY.csv` (Stationary baseline)
+- `EXP_02_PHYSICAL_EXPERIMENTS_LABELED.csv` (Light vibration, single push, repeated pushes, strong shaking, and combined breach events)
 
 ---
 
@@ -508,44 +508,32 @@ Scenario 9+:     [Other combinations]                      ✅ All working
 ```
 
 **Results**:
-- Fault localization accuracy: 100% on prototype
-- False-positive rate: 0% (in lab conditions)
-- Response time: <100ms from sensor to relay
-- Data quality: 26 samples collected (85% measured, 15% imputed)
+- Electrical fault states experimentally validated across the 3-zone prototype.
+- Response time: <100ms from sensor trigger to safety isolation relay.
+- Experimental dataset: Traceable raw data preserved under `hardware/experiments/` and `ml/dataset/raw/`.
 
 ---
 
-## Future Enhancements
+## Current Status & Next Sequence
 
-### Phase 2: Physical Tamper Detection
-- Accelerometer integration
-- Vibration pattern analysis
-- Environmental vs. intentional tampering classification
+### Physical Tamper Sensor Status
+- MPU6050 integration COMPLETE; sensor-fusion algorithm and final real-time classification PENDING.
 
-### Phase 3: ML Model Optimization
-- Larger dataset collection
-- Baseline model training (Decision Tree, Random Forest)
-- TensorFlow Lite export for ESP32 inference
-
-### Phase 4: Commercial Deployment
-- High-voltage fence compatibility (with professional electrical review)
-- Cloud backend scaling
-- Mobile app for remote monitoring
-- SMS/email alerts
-- Predictive maintenance (trend analysis)
+### Phase 3: ML Model Development
+- Preprocessing pipeline (`ml/preprocessing/feature_pipeline.py`) ready for feature extraction.
+- Priyada (ML Lead) evaluating Random Forest baseline and temporal feature windowing.
 
 ---
 
-**Last Updated**: 17 August 2026  
-**Architecture Version**: 1.1 (3-zone electrical + future physical tamper)
+**Last Updated**: 19 August 2026  
+**Architecture Version**: 1.2 (3-Zone Electrical + MPU6050 Integrated Prototype)
 
 ## Communication Protocols
 
 ### ESP32 ↔ Sensors
-- **I2C**: INA219 (100 kHz)
-- **ADC**: Voltage input (10-bit, 1MHz)
-- **GPIO**: Interrupt-driven for tamper
-- **1-Wire**: DS18B20 temperature
+- **I2C**: INA219 (`0x40`) & MPU6050 (`0x68`) on SDA GPIO21, SCL GPIO22 (100 kHz)
+- **ADC**: Zone 1 (GPIO 34), Zone 2 (GPIO 35), Zone 3 (GPIO 32)
+- **GPIO**: Relay Control (GPIO 23), Buzzer (GPIO 14), LEDs (GPIO 25, 26, 27)
 
 ### ESP32 ↔ Backend
 - **MQTT** (preferred): Low bandwidth, subscribe/publish

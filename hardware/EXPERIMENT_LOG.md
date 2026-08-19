@@ -152,17 +152,11 @@ Clear separation between states → High classification confidence
 ### Objective
 Detect physical fence movement, vibration, or deliberate manipulation attempts even when electrical integrity remains normal. Provides additional security layer beyond electrical sensing.
 
-### Planned Approach
+### Implementation Status
 
-1. **Sensor Selection** (17-AUG, PENDING)
-   - Candidates: ADXL345 accelerometer, vibration sensor, strain gauge
-   - Decision required: Anup (IoT Lead)
-   - Criteria: I2C compatibility, low power, accurate frequency response (0.1–5Hz)
-
-2. **Hardware Integration** (18-AUG)
-   - Mount physical sensor on fence structure
-   - Connect to ESP32 via I2C or GPIO
-   - Test sensor responsiveness
+1. **Sensor Selection & Hardware Integration** (COMPLETE)
+   - Chosen Sensor: MPU6050 6-Axis Motion Sensor (Accelerometer + Gyroscope) via I2C (`0x68`, SDA GPIO21, SCL GPIO22)
+   - Status: Sensor connected and raw 6-DOF telemetry (`AX, AY, AZ, GX, GY, GZ`) captured across physical experiments.
 
 3. **Baseline Collection** (18-AUG)
    - Record sensor readings for normal fence conditions

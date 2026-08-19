@@ -12,8 +12,10 @@ Important constraints:
 ## Data sources
 
 Planned ingestion sources:
-- `data/raw/tamper_experiments/EXP_01_NORMAL_STATIONARY.csv`
-- future raw experiment CSV files for vibration, tamper, and electrical fault cases
+- `hardware/experiments/physical_tamper/EXP_01_NORMAL_STATIONARY.csv`
+- `hardware/experiments/physical_tamper/EXP_02_PHYSICAL_EXPERIMENTS_LABELED.csv`
+- `hardware/experiments/electrical_faults/sih_fence_raw_dataset.csv`
+- Mirrored under `ml/dataset/raw/`
 
 ## Raw schema
 
