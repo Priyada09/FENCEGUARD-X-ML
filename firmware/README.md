@@ -2,12 +2,15 @@
 
 ## Overview
 
-FENCEGUARD-X firmware runs on ESP32, handling:
-- **Phase 1 ✅ COMPLETE**: 3-zone electrical fault detection (zone voltage sensing + INA219)
-- **Phase 2 🔄 IN PROGRESS**: Physical tamper sensor integration (future: accelerometer/vibration)
-- **Ongoing**: Sensor fusion, telemetry, MQTT/HTTP communication, relay control
+FENCEGUARD-X modular ESP32 firmware runs on the ESP32 Dev Module, managing multi-sensor acquisition, signal filtering, motion feature extraction, preliminary rule-based sensor fusion, and CSV telemetry serial output.
 
-**Current Status**: Electrical zone acquisition validated with 26-sample experimental dataset. Physical tamper integration pending.
+**Current Status**: 
+- **Modular Firmware Architecture**: Fully implemented under `firmware/esp32/`.
+- **3-Zone Electrical Layer**: Independent ADC acquisition (GPIO 34, 35, 32) and classification (`NORMAL`, `OPEN/CUT`, `SHORT`).
+- **INA219 Power Monitor**: I2C bus metrics (`0x40`), preserving direct empirical zero readings.
+- **MPU6050 Motion Fusion**: 6-DOF IMU acquisition (`0x68`), baseline stationary calibration, raw vector magnitude, and temporal delta calculation.
+- **Preliminary Sensor Fusion**: Rule-based decision matrix (`NORMAL`, `ELECTRICAL_FAULT`, `PHYSICAL_TAMPER`, `BREACH`).
+- **CSV Telemetry Stream**: 21-column standardized telemetry output format for data logging and ML ingestion.
 
 ---
 
@@ -54,41 +57,16 @@ platformio device monitor --speed 115200
 ## Firmware Structure
 
 ```
-esp32/
-├─ main/
-│  ├─ main.cpp                      # Entry point, FreeRTOS task scheduler
-│  ├─ config.h                      # Configuration constants, I2C addresses, GPIO pins
-│  │
-│  ├─ ELECTRICAL LAYER (Phase 1)
-│  ├─ sensor_driver.cpp              # ADC init, zone voltage acquisition (all 3 zones)
-│  ├─ ina219_driver.cpp              # I2C communication, bus voltage/current/power
-│  ├─ zone_classifier.cpp            # Per-zone state determination (NORMAL/OPEN/SHORT)
-│  │
-│  ├─ PHYSICAL LAYER (Phase 2 - TBD)
-│  ├─ tamper_sensor_driver.cpp       # Future: accelerometer/vibration sensor I/O
-│  │
-│  ├─ PROCESSING LAYER
-│  ├─ data_filter.cpp                # Moving average, validation, outlier removal
-│  ├─ sensor_fusion.cpp              # Combine electrical + physical (future) evidence
-│  ├─ telemetry.cpp                  # Payload assembly (zone states + INA219 + metadata)
-│  │
-│  ├─ DECISION LAYER
-│  ├─ safety_logic.cpp               # Isolation decision: NORMAL / ALERT / CRITICAL
-│  ├─ relay_controller.cpp           # GPIO relay actuation + debouncing
-│  │
-│  ├─ COMMUNICATION LAYER
-│  ├─ mqtt_handler.cpp               # MQTT event publishing (future, optional)
-│  ├─ http_handler.cpp               # HTTP/REST telemetry posting
-│  ├─ storage.cpp                    # EEPROM circular buffer for offline logging
-│  │
-│  └─ utils.cpp                      # Timing, string utilities, debugging
-│
-├─ models/
-│  └─ model.tflite                   # TensorFlow Lite model (future, Phase 3)
-│
-├─ platformio.ini                    # Build configuration, board settings, libraries
-├─ .gitignore
-└─ README.md                         # This file
+firmware/
+└─ esp32/
+   ├─ config.h          # Global constants, pin allocations, thresholds, timing
+   ├─ zone_adc.h        # 3-Zone ADC voltage acquisition & threshold classification
+   ├─ ina219_sensor.h   # INA219 I2C bus voltage, current, and power monitoring
+   ├─ mpu6050_fusion.h  # MPU6050 6-DOF IMU acquisition, magnitudes, and baseline calib
+   ├─ sensor_fusion.h   # Multi-sensor rule-based preliminary decision engine
+   ├─ telemetry.h       # CSV & diagnostic serial output formatting
+   ├─ main.cpp          # ESP32 main setup/loop entry point (millis-based non-blocking)
+   └─ esp32.ino         # Arduino IDE wrapper sketch
 ```
 
 ---
