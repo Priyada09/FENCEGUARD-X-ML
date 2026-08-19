@@ -152,7 +152,7 @@
   2. Show event log stored on device
   3. Explain: "Backend is for monitoring, not safety"
 
-**Owner**: Jayesh + Alok Kumar
+**Owner**: Anup + Alok Kumar
 
 ---
 
@@ -184,7 +184,7 @@
   2. Add watchdog timer for automatic cutoff
   3. Document workaround, explain to judges
 
-**Owner**: Anup + Jayesh
+**Owner**: Anup
 
 ---
 
@@ -206,7 +206,7 @@
 - ✅ Calibrate during startup
 - ✅ Tune detection thresholds for <5% false alarm rate
 
-**Owner**: Jayesh + Anup
+**Owner**: Anup
 
 ---
 

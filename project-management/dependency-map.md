@@ -1,7 +1,7 @@
 # Dependency Map — FENCEGUARD-X
 
 **Purpose**: Visualize task dependencies to prevent bottlenecks  
-**Last Updated**: 14 August 2026  
+**Last Updated**: 19 August 2026  
 
 ---
 
@@ -55,23 +55,23 @@ HW-08: HW/FW Integration      FW-07: Communication         ML-07: Model Export  
 | Dependent Task | Blocked By | Blocker Owner | Blocker Due | Days Buffer |
 |---|---|---|---|---|
 | FW-02 | HW-02 (INA219 working) | Anup | 15-AUG 12:00 | -2 |
-| FW-03 | FW-02 (sensor data) | Jayesh | 15-AUG 18:00 | 1 |
+| FW-03 | FW-02 (sensor data) | Anup | 15-AUG 18:00 | 1 |
 | FW-05 | HW-05 (relay ready) | Anup | 16-AUG 15:00 | -1 |
-| FW-06 | FW-03, FW-04, FW-05 | Jayesh | 16-AUG 20:00 | 1 |
-| FW-07 | FW-06 (data structure) | Jayesh | 17-AUG 10:00 | 2 |
+| FW-06 | FW-03, FW-04, FW-05 | Anup | 16-AUG 20:00 | 1 |
+| FW-07 | FW-06 (data structure) | Anup | 17-AUG 10:00 | 2 |
 | ML-04 | ML-03 (features) + ML-02 (dataset) | Priyada | 16-AUG 12:00 | 0 |
 | ML-07 | ML-06 (score) + TFLite tools | Priyada | 17-AUG 14:00 | 2 |
-| ML-08 | ML-07 (model) + FW-06 (output format) | Priyada + Jayesh | 17-AUG 18:00 | 2 |
+| ML-08 | ML-07 (model) + FW-06 (output format) | Priyada + Anup | 17-AUG 18:00 | 2 |
 | BE-03 | BE-02 (schema) | Alok Kumar | 15-AUG 18:00 | 1 |
 | BE-05 | BE-03 (POST) + BE-04 (GET) | Alok Kumar | 16-AUG 12:00 | 0 |
-| BE-06 | BE-05 (DB) + FW-07 (communication) | Alok Kumar + Jayesh | 17-AUG 10:00 | 2 |
-| BE-07 | BE-06 (integration) + DB-04 (dashboard integration) | Alok Kumar + Ananya | 17-AUG 14:00 | 2 |
+| BE-06 | BE-05 (DB) + FW-07 (communication) | Alok Kumar + Anup | 17-AUG 10:00 | 2 |
+| BE-07 | BE-06 (integration) + DB-04 (dashboard) | Alok Kumar + Sakshi | 17-AUG 14:00 | 2 |
 | DB-02 | BE-04 (API status) | Alok Kumar | 15-AUG 20:00 | 2 |
 | DB-04 | DB-02 (component) + BE-07 (API) | Ananya + Alok Kumar | 17-AUG 10:00 | 2 |
 | DB-05 | DB-04 (integration) | Ananya | 17-AUG 14:00 | 2 |
-| INT-01 | HW-02, FW-03 | Anup + Jayesh | 16-AUG 12:00 | ⚠️ CRITICAL |
-| INT-02 | FW-06, ML-07 | Jayesh + Priyada | 16-AUG 18:00 | ⚠️ CRITICAL |
-| INT-03 | FW-07, BE-03 | Jayesh + Alok Kumar | 16-AUG 20:00 | ⚠️ CRITICAL |
+| INT-01 | HW-02, FW-03 | Anup | 16-AUG 12:00 | ⚠️ CRITICAL |
+| INT-02 | FW-06, ML-07 | Anup + Priyada | 16-AUG 18:00 | ⚠️ CRITICAL |
+| INT-03 | FW-07, BE-03 | Anup + Alok Kumar | 16-AUG 20:00 | ⚠️ CRITICAL |
 
 ---
 
@@ -130,10 +130,10 @@ HW-01 (0h)
 | Dependency | Risk | Owner | Mitigation |
 |---|---|---|---|
 | HW-02 (Sensors) | Hardware doesn't arrive | Anup | Order TODAY, same-day shipping if possible. Have spare. |
-| FW-02 (Sensor reading) | Code won't compile | Jayesh | Set up Arduino IDE/PlatformIO NOW, test on demo ESP32 board. |
+| FW-02 (Sensor reading) | Code won't compile | Anup | Set up Arduino IDE/PlatformIO NOW, test on demo ESP32 board. |
 | ML-02 (Dataset) | Data collection too slow | Priyada | Start collecting TODAY. Use simulated data if real not available. |
 | BE-02 (Database schema) | Schema too rigid | Alok Kumar | Design schema flexibly. Avoid strict validation early. |
-| INT-03 (API integration) | Network unreliable | Alok Kumar + Jayesh | Test HTTP over WiFi, have USB fallback for testing. |
+| INT-03 (API integration) | Network unreliable | Alok Kumar + Anup | Test HTTP over WiFi, have USB fallback for testing. |
 
 ### Medium-Risk Dependencies (Can Be Worked Around)
 
@@ -153,7 +153,7 @@ HW-01 (0h)
 These can happen in parallel, independently:
 
 ```
-Anup (Hardware)          Jayesh (Firmware)           Priyada (ML)                  Alok Kumar (Backend)        Ananya (Presentation)
+Anup (Hardware+Firmware)  Priyada (ML)           Alok Kumar (Backend)    Sakshi (Frontend)     Ananya (Presentation)
 ├─ HW-01                 ├─ FW-01                    ├─ ML-01                      ├─ BE-01                    ├─ PPT-01
 ├─ HW-02                 ├─ FW-02                    ├─ ML-02                      ├─ BE-02                    ├─ PPT-02
 ├─ HW-03                 └─ FW-03                    ├─ ML-03                      └─ BE-03                    └─ Task management
@@ -187,7 +187,7 @@ For each task, identify what can happen in parallel:
 
 ```
 Primary Path (FW-06 depends on FW-03, FW-04, FW-05):
-  Jayesh: FW-06 (start at 15-AUG 22:00, after FW-05 done)
+  Anup: FW-06 (start at 15-AUG 22:00, after FW-05 done)
 
 Parallel Preparation:
   Alok Kumar: Design JSON format for firmware output
@@ -201,7 +201,7 @@ Result: FW-06 completed faster because groundwork was laid
 
 ```
 Primary Path (INT-03 depends on FW-07, BE-03):
-  Jayesh + Alok: Integrate (start at 16-AUG 18:00)
+  Anup + Alok: Integrate (start at 16-AUG 18:00)
 
 Parallel Preparation:
   Anup: Set up WiFi hotspot for testing

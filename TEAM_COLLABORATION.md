@@ -118,7 +118,7 @@ Every task has:
 ### Good Comment
 ```
 ✅ "Implemented sensor filtering. Results show false alarm rate < 2%. 
-   Ready for firmware integration. @jayesh please review when ready."
+   Ready for firmware integration. @anup please review when ready."
 ```
 
 ### Bad Comment
@@ -196,7 +196,7 @@ fixed stuff
 
 ### To Ask Someone Else For Help
 ```
-@jayesh can you review my MQTT code? Need your firmware expertise on line 45.
+@anup can you review my MQTT code? Need your firmware expertise on line 45.
 ```
 
 ### To Hand Off to Someone
@@ -273,7 +273,7 @@ Issue: #34
 ❌ Don't: Say nothing, waste 3 hours, then panic
 ✅ Do:    After 30 min stuck, ask in comments:
 
-@jayesh quick question on line 45 of mqtt_handler.cpp
+@anup quick question on line 45 of mqtt_handler.cpp
 Getting "Connection timeout" on first connect attempt.
 Debug output attached. Can you help debug?
 ```

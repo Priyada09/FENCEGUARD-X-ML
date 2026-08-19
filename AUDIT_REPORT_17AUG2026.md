@@ -368,7 +368,7 @@ The hardware layer for **3-zone electrical fault detection** has been **COMPLETE
 - [ ] All failure modes tested
 - [ ] Photos/videos for presentation
 
-### Jayesh (Firmware Lead)
+### Anup (IoT + Firmware/Hardware Lead)
 
 **17-AUG (TODAY - EOD)**:
 - [ ] Review electrical acquisition code (already working)
@@ -530,10 +530,8 @@ The hardware layer for **3-zone electrical fault detection** has been **COMPLETE
    - Create test telemetry in database
    - Confirm API route structure works
 
-4. **Jayesh**:
-   - Review electrical firmware code
-   - Prepare sensor fusion module architecture
-   - Identify any code refactoring needed
+4. **Anup**:
+   - Review electrical firmware code and sensor fusion integration
 
 5. **Ananya**:
    - Create architecture diagram with 3-zone + sensor fusion

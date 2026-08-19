@@ -122,52 +122,52 @@ None / [Link to blocking issue]
 
 ---
 
-### ⚙️ Firmware — JAYESH
+### ⚙️ Firmware — ANUP
 
 **FW-01: ESP32 firmware skeleton**
-- Owner: Jayesh
+- Owner: Anup
 - Deadline: 14-AUG 23:59
 - Priority: P0
 - Description: Set up FreeRTOS tasks, GPIO init, main loop
 - Acceptance: Firmware compiles, ESP32 boots
 
 **FW-02: Sensor data acquisition**
-- Owner: Jayesh
+- Owner: Anup
 - Deadline: 15-AUG 18:00
 - Priority: P0
 - Description: INA219 I2C driver, ADC sampling, 100Hz rate
 - Acceptance: Sensor readings accurate and consistent
 
 **FW-03: Data filtering**
-- Owner: Jayesh
+- Owner: Anup
 - Deadline: 15-AUG 20:00
 - Priority: P1
 - Description: Moving average filter, outlier rejection
 - Acceptance: False alarm rate <5%
 
 **FW-04: Tamper event handling**
-- Owner: Jayesh
+- Owner: Anup
 - Deadline: 16-AUG 12:00
 - Priority: P0
 - Description: Interrupt handler for reed switch
 - Acceptance: <10ms detection latency
 
 **FW-05: Relay control**
-- Owner: Jayesh
+- Owner: Anup
 - Deadline: 16-AUG 15:00
 - Priority: P0
 - Description: GPIO relay driver, safety logic, cooldown
 - Acceptance: Relay responds reliably
 
 **FW-06: Communication protocol**
-- Owner: Jayesh
+- Owner: Anup
 - Deadline: 17-AUG 10:00
 - Priority: P1
 - Description: MQTT client, JSON event publishing
 - Acceptance: Events published reliably to backend
 
 **FW-07: Firmware testing**
-- Owner: Jayesh
+- Owner: Anup
 - Deadline: 18-AUG 14:00
 - Priority: P1
 - Description: Unit tests, integration tests, serial output validation
@@ -372,21 +372,21 @@ None / [Link to blocking issue]
 ### 🚨 INTEGRATION Issues
 
 **INT-01: ESP32 → ML data pipeline**
-- Owner: ALL (Jayesh + Priyada primarily)
+- Owner: ALL (Anup + Priyada primarily)
 - Deadline: 16-AUG 18:00
 - Priority: P0 (CRITICAL)
 - Description: Sensor data → ML model → classification working end-to-end
 - Acceptance: Real sensor data classified correctly by model
 
 **INT-02: ESP32 → Backend API**
-- Owner: ALL (Jayesh + Alok Kumar primarily)
+- Owner: ALL (Anup + Alok Kumar primarily)
 - Deadline: 16-AUG 20:00
 - Priority: P0 (CRITICAL)
 - Description: Events flowing from firmware to MongoDB
 - Acceptance: Can query database for ESP32 events
 
 **INT-03: ML decision → Safety controller**
-- Owner: ALL (Priyada + Jayesh primarily)
+- Owner: ALL (Priyada + Anup primarily)
 - Deadline: 17-AUG 10:00
 - Priority: P0 (CRITICAL)
 - Description: When ML says "critical", relay cuts automatically
@@ -442,7 +442,7 @@ Team Standup - 14 AUG 2026
    - What will you do today?
    - Any blockers?
 
-✅ Jayesh (Firmware):
+✅ Sakshi (Frontend/Deployment):
    - What did you do yesterday?
    - What will you do today?
    - Any blockers?

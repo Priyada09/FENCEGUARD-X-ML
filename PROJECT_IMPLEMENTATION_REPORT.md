@@ -147,27 +147,20 @@ FENCEGUARD-X/
 
 ---
 
-### JAYESH — Firmware Lead
+### ANUP PATIL — Hardware + Firmware Lead
 
-**Owner**: ESP32/STM32 firmware, sensor acquisition, communication  
+**Owner**: Hardware design, ESP32/STM32 firmware, sensor acquisition, communication, experimental data collection  
 **Priority Assignments**:
 
-- **P0 (Critical)**: 8 tasks
-  - FW-01: Firmware skeleton (14-AUG)
-  - FW-02: Sensor acquisition (15-AUG)
-  - FW-03: Data processing (15-AUG)
-  - FW-04: Tamper input (16-AUG)
-  - FW-05: Relay control (16-AUG)
-  - FW-06: Structured output (16-AUG)
-  - FW-07: Communication (17-AUG)
-  - FW-08: Testing & stability (18-AUG)
+- **P0 (Critical)**: 16 tasks
+  - HW-01 through HW-08: Hardware integration (14-18 AUG)
+  - FW-01 through FW-08: Firmware development (14-18 AUG)
 
-- **P1 (High)**: 3 tasks
-  - FW-09: Error handling
-  - FW-10: Reconnection handling
-  - FW-11: Documentation
+- **P1 (High)**: 7 tasks
+  - HW-09 through HW-12: Documentation and calibration
+  - FW-09 through FW-11: Error handling and robustness
 
-**Deliverable by 17-AUG**: Complete firmware with sensor reading, ML integration, and backend communication
+**Deliverable by 18-AUG**: Complete hardware + firmware with sensor reading, ML integration, backend communication, and experimental baseline
 
 ---
 
@@ -439,10 +432,10 @@ git push -u origin main
 Go to **Issues** tab, create 47 issues from `master-task-list.md`:
 
 **Hardware (8 issues)**: HW-01 through HW-08 → Assign to Anup  
-**Firmware (8)**: FW-01 through FW-08 → Assign to Jayesh  
+**Firmware (8)**: FW-01 through FW-08 → Assign to Anup  
 **ML (8)**: ML-01 through ML-08 → Assign to Priyada  
 **Backend (8)**: BE-01 through BE-08 → Assign to Alok Kumar  
-**Dashboard (7)**: DB-01 through DB-07 → Assign to Ananya  
+**Dashboard (8)**: DB-01 through DB-07, DEP-01 → Assign to Sakshi  
 **Integration (7)**: INT-01 through INT-07 → Assign to ALL  
 **Testing (5)**: TEST-01 through TEST-05 → Assign to relevant owner  
 **Docs (4)**: DOC-01 through DOC-04 → Assign to relevant owner  
@@ -460,11 +453,12 @@ Due Date: [Specific deadline]
 ### Step 5: Add Team Members (Anup)
 
 1. Go to Settings → Collaborators
-2. Add all 4 team members with **Write** access:
-   - Jayesh (Firmware)
+2. Add all 5 team members with **Write** access:
+   - Anup Patil (Hardware + Firmware)
    - Priyada (ML)
    - Alok Kumar (Backend)
-   - Ananya (Presentation/PM)
+   - Sakshi (Frontend + Deployment)
+   - Ananya (Presentation)
 
 ### Step 6: First Standup (All - 10:00 AM)
 

@@ -153,7 +153,7 @@
 - IOT-02: I2C communication working
 - IOT-03: Tamper detection logic
 
-### Jayesh (Firmware)
+### Anup (IoT & Firmware Lead)
 **Read First**:
 1. README.md
 2. firmware/README.md

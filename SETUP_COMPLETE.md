@@ -92,27 +92,27 @@ IOT-07: Hardware testing                      (18-AUG 14:00, P1)
 IOT-08: Final hardware integration            (18-AUG 20:00, P0)
 ```
 
-### Firmware (7 issues) - JAYESH
+### Firmware (7 issues) - ANUP
 ```
 FW-01: ESP32 firmware skeleton                (14-AUG 23:59, P0)
 FW-02: Sensor data acquisition                (15-AUG 18:00, P0)
 FW-03: Data filtering                         (15-AUG 20:00, P1)
 FW-04: Tamper event handling                  (16-AUG 12:00, P0)
 FW-05: Relay control                          (16-AUG 15:00, P0)
-FW-06: Communication protocol (MQTT)          (17-AUG 10:00, P1)
+FW-06: Communication protocol                 (17-AUG 10:00, P1)
 FW-07: Firmware testing                       (18-AUG 14:00, P1)
 ```
 
 ### Machine Learning (8 issues) - PRIYADA
 ```
-ML-01: Define detection classes               (14-AUG 23:59, P0)
-ML-02: Prepare dataset                        (15-AUG 14:00, P0)
-ML-03: Feature engineering                    (15-AUG 18:00, P1)
-ML-04: Train baseline model                   (16-AUG 12:00, P0)
-ML-05: Evaluate model                         (16-AUG 15:00, P1)
-ML-06: Anomaly score implementation           (17-AUG 10:00, P1)
-ML-07: Integrate inference in firmware        (17-AUG 18:00, P0)
-ML-08: Prepare ML results for presentation    (18-AUG 20:00, P1)
+ML-01: ML development environment setup        (14-AUG 23:59, P0)
+ML-02: Data collection & preprocessing         (15-AUG 18:00, P0)
+ML-03: Feature engineering pipeline            (16-AUG 12:00, P0)
+ML-04: Baseline model training                 (16-AUG 18:00, P0)
+ML-05: Anomaly detection algorithm             (17-AUG 12:00, P0)
+ML-06: Model optimization for ESP32            (17-AUG 16:00, P1)
+ML-07: TFLite Micro model conversion           (17-AUG 20:00, P0)
+ML-08: Model integration testing              (18-AUG 18:00, P1)
 ```
 
 ### Backend (7 issues) - ALOK KUMAR

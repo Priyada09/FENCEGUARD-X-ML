@@ -3,8 +3,8 @@
 **Project**: FENCEGUARD-X — AI + IoT Electric Fence Safety System  
 **Target**: SIH 2026 Internal Round  
 **Deadline**: 20 August 2026  
-**Current Date**: 17 August 2026  
-**Days Remaining**: 3 days  
+**Current Date**: 19 August 2026  
+**Days Remaining**: 1 day  
 
 ---
 
@@ -18,11 +18,11 @@
 
 | Module | Status | Progress | Owner | Deliverable |
 |--------|--------|----------|-------|-------------|
-| **Hardware** | 🟢 **COMPLETE** | 100% | Anup | 3-zone electrical detection validated; 26-sample dataset collected |
-| **Firmware** | 🟡 In Progress | 40% | Jayesh | Electrical acquisition done; physical tamper integration pending |
-| **ML** | 🟡 In Progress | 30% | Priyada | Dataset imported; EDA pending; baseline model pending |
+| **Hardware** | 🟢 **COMPLETE** | 100% | Anup | 3-zone electrical detection validated; EXP_01 baseline collected |
+| **Firmware** | 🟡 In Progress | 50% | Anup | Electrical acquisition done; session-aware logger pending |
+| **ML** | 🟡 In Progress | 40% | Priyada | EXP_01 baseline validated; feature engineering skeleton in place |
 | **Backend** | 🟡 In Progress | 20% | Alok Kumar | Schema updated; API skeleton pending |
-| **Dashboard** | 🟡 In Progress | 15% | Ananya | UI framework pending; integration pending |
+| **Dashboard** | 🟡 In Progress | 20% | Sakshi | UI framework pending; backend integration pending |
 | **Integration** | 🟡 Planning | 10% | ALL | Critical path: 18-AUG feature freeze |
 | **Testing** | 🟡 Planning | 5% | ALL | Schedule: 19-AUG |
 | **Presentation** | 🟡 In Progress | 25% | Ananya | Architecture updated; demo flow pending |
@@ -57,10 +57,12 @@
 - ✅ Current measurement: 80–125 mA typical, verified via INA219
 
 ### Dataset (Priyada) ✅
-- ✅ 26 real experimental samples collected
-- ✅ Data quality: 85% MEASURED, 15% IMPUTED_BUS_VOLTAGE (documented)
-- ✅ CSV file: `ml/dataset/raw/sih_fence_raw_dataset.csv`
-- ✅ Dataset README: `ml/dataset/README.md` (comprehensive documentation)
+- ✅ Real experimental samples collected and preserved with full traceability
+- ✅ Physical tamper telemetry: `hardware/experiments/physical_tamper/EXP_01_NORMAL_STATIONARY.csv`, `EXP_02_PHYSICAL_EXPERIMENTS_LABELED.csv`
+- ✅ Electrical fault telemetry: `hardware/experiments/electrical_faults/sih_fence_raw_dataset.csv`
+- ✅ Raw ML dataset: `ml/dataset/raw/sih_fence_raw_dataset.csv`, `ml/dataset/raw/EXP_01_NORMAL_STATIONARY.csv`, `ml/dataset/raw/EXP_02_PHYSICAL_EXPERIMENTS_LABELED.csv`
+- ✅ Data quality: MEASURED records preserved; loose connections and imputed values tagged
+- ✅ Dataset READMEs: `hardware/experiments/README.md` and `ml/dataset/README.md`
 
 ### Documentation ✅
 - ✅ README.md (updated 3-zone architecture)
@@ -159,7 +161,7 @@ All teams can proceed with development.
 - [ ] Hardware safety validation (electrical isolation, fail-safe logic)
 - [ ] Prepare hardware demonstration photos
 
-### Jayesh (Firmware)
+### Anup Patil (Hardware + Firmware)
 - [ ] Read physical tamper sensor in firmware loop
 - [ ] Implement sensor fusion: combine zone states + tamper signal
 - [ ] Create unified telemetry payload with all sensor data
@@ -274,7 +276,7 @@ All teams can proceed with development.
 Before proceeding with feature implementation:
 
 - [ ] **Anup**: Physical tamper sensor selected + integration plan ready
-- [ ] **Jayesh**: Firmware environment updated, ready for sensor fusion
+- [ ] **Anup**: Session-aware firmware logger ready for EXP_02+ data collection
 - [ ] **Priyada**: Dataset loaded, EDA started
 - [ ] **Alok Kumar**: Database schema finalized, API skeleton ready
 - [ ] **Ananya**: Architecture diagrams updated, demo flow drafted

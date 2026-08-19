@@ -34,7 +34,7 @@ Status:
 | **Reason** | Safety requires <100ms latency. WiFi roundtrip too slow. Offline capability needed. |
 | **Alternatives** | 1) Cloud AI — cloud-based model inference; 2) Hybrid — local + cloud |
 | **Chosen** | Edge AI on ESP32 using TensorFlow Lite Micro |
-| **Owner** | Priyada + Jayesh |
+| **Owner** | Priyada + Anup |
 | **Impact** | Model must be <200KB, inference <50ms, framework constrained to TFLite |
 | **Reversible** | Partially — model training is TFLite-specific |
 | **Status** | LOCKED (architecture-critical) |
@@ -111,7 +111,7 @@ IF no_critical_event
 | **Reason** | WiFi built-in, lower cost, better Arduino support, sufficient performance for ML inference |
 | **Alternatives** | STM32H7 (more powerful but more expensive) |
 | **Chosen** | ESP32 |
-| **Owner** | Anup + Jayesh |
+| **Owner** | Anup |
 | **Impact** | Constrains to ~240 MHz, 520KB RAM. Model size <200KB. Latency target <50ms. |
 | **Reversible** | Partially — C code portable but WiFi library ESP32-specific |
 | **Status** | LOCKED |
@@ -151,7 +151,7 @@ IF no_critical_event
 | **Reason** | Fails safe (cuts power on relay failure), no external power needed to cut power |
 | **Alternatives** | MOSFET (faster but not fail-safe), SCR (latching, requires controlled turn-off) |
 | **Chosen** | Normally-closed relay |
-| **Owner** | Anup + Jayesh |
+| **Owner** | Anup |
 | **Impact** | Relay response ~50-100ms. Slower than solid-state but safer. |
 | **Reversible** | Yes |
 | **Status** | LOCKED |
@@ -223,7 +223,7 @@ IF no_critical_event
 | **Reason** | Simple, widely understood, ESP32 libraries readily available, adequate for this scale |
 | **Alternatives** | 1) MQTT (pub/sub, better for IoT); 2) GraphQL (overkill for demo) |
 | **Chosen** | REST API with HTTP POST for events |
-| **Owner** | Alok Kumar + Jayesh |
+| **Owner** | Alok Kumar + Anup |
 | **Impact** | Can't be production-scale (would need MQTT later). Sufficient for demo. |
 | **Reversible** | Yes — can migrate to MQTT |
 | **Status** | LOCKED for 7-day hackathon |

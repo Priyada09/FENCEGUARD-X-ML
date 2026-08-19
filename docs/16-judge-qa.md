@@ -464,7 +464,7 @@ Judges will see proof of concept. We'll explain that live tech sometimes fails, 
 
 **Answer**:
 "Honest response:
-'That's a great question. I don't have the exact answer right now. Jayesh [assign person], do you know? If not, we can follow up with the data after judging.'
+'That's a great question. I don't have the exact answer right now. [Designated team member], do you know? If not, we can follow up with the data after judging.'
 
 **Never make up a number.** Judges respect honesty + follow-up more than a wrong guess."
 

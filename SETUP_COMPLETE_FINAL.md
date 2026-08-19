@@ -84,14 +84,12 @@
 ### 📊 Project Management System
 
 ✅ **47 tracked tasks** with owners and deadlines:
-- 8 Hardware (Anup)
-- 8 Firmware (Jayesh)
+- 16 Hardware & Firmware (Anup)
 - 8 ML (Priyada)
 - 8 Backend (Alok Kumar)
-- 7 Dashboard (Ananya)
-- 7 Integration (All)
-- 4 Testing (Owners)
-- 4 Documentation (Owners)
+- 7 Dashboard & Deployment (Sakshi)
+- 4 Presentation & PM (Ananya)
+- 4 Testing & Integration (All)
 
 ✅ **7 major milestones** (14-20 AUG):
 - M1: Architecture Freeze (14-AUG 23:59)
@@ -117,11 +115,11 @@
 
 | Member | Role | Primary Tasks | Deliverable | Deadline |
 |--------|------|---|---|---|
-| **Anup** | IoT & Automation | Hardware (HW-01 to HW-12), Integration Lead | Working hardware + integration coordination | 18-AUG |
-| **Jayesh** | Firmware | Firmware (FW-01 to FW-11) | Complete firmware with communication | 17-AUG |
-| **Priyada** | ML | ML Pipeline (ML-01 to ML-10) | Working model (94%+ accuracy) | 17-AUG |
-| **Alok Kumar** | Backend | APIs + Database (BE-01 to BE-10) | Complete backend with event logging | 17-AUG |
-| **Ananya** | Presentation & PM | PPT (PPT-01 to PPT-11) + Project Management | Polished presentation ready for judges | 18-AUG |
+| **Anup** | IoT & Automation + Firmware/Hardware Lead | 3-Zone Hardware (HW-01..12), ESP32 Firmware (FW-01..11) | Working hardware + firmware + integration | 18-AUG |
+| **Priyada** | ML Lead | ML Pipeline (ML-01 to ML-10) | Validated feature extraction & baseline ML model | 17-AUG |
+| **Alok Kumar** | Backend Lead | APIs + Database (BE-01 to BE-10) | Complete backend with telemetry & event logging | 17-AUG |
+| **Sakshi** | Frontend & Deployment Lead | Dashboard & Hosting (DB-01 to DB-07) | Real-time monitoring dashboard & demo hosting | 18-AUG |
+| **Ananya** | Presentation Lead | PPT (PPT-01 to PPT-11) + Pitch | Polished presentation ready for judges | 18-AUG |
 
 ---
 
@@ -368,7 +366,7 @@ You're the integration coordinator. Your role:
 - Make decisions when consensus unclear
 - Be the calm voice when pressure builds
 
-### To the Developers (Jayesh, Priyada, Alok Kumar)
+### To the Developers (Anup, Priyada, Alok Kumar, Sakshi)
 
 Your role:
 - Execute your tasks to Definition of Done

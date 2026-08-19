@@ -138,41 +138,32 @@ This is expected because the sensor is mounted at an angle and gravity is distri
 
 ## Experimental data
 
-The project contains real experimental data already collected:
-- [data/raw/tamper_experiments/EXP_01_NORMAL_STATIONARY.csv](data/raw/tamper_experiments/EXP_01_NORMAL_STATIONARY.csv)
+The project contains real experimental data collected from prototype testing:
+- [hardware/experiments/physical_tamper/EXP_01_NORMAL_STATIONARY.csv](hardware/experiments/physical_tamper/EXP_01_NORMAL_STATIONARY.csv)
+- [hardware/experiments/physical_tamper/EXP_02_PHYSICAL_EXPERIMENTS_LABELED.csv](hardware/experiments/physical_tamper/EXP_02_PHYSICAL_EXPERIMENTS_LABELED.csv)
+- [hardware/experiments/electrical_faults/sih_fence_raw_dataset.csv](hardware/experiments/electrical_faults/sih_fence_raw_dataset.csv)
+- [ml/dataset/raw/sih_fence_raw_dataset.csv](ml/dataset/raw/sih_fence_raw_dataset.csv)
 
-This is real hardware data, not synthetic replacement data. It includes the schema:
-- `timestamp_ms`
-- `zone1_v`
-- `zone2_v`
-- `zone3_v`
-- `bus_voltage_v`
-- `current_ma`
-- `power_mw`
-- `ax`
-- `ay`
-- `az`
-- `gx`
-- `gy`
-- `gz`
-- `label`
-
-Current label:
-- `NORMAL_STATIONARY`
+This is real hardware data, preserving original readings and loose connection annotations. Schema includes:
+- `timestamp_ms` / `sample_id`
+- `zone1_v`, `zone2_v`, `zone3_v`
+- `bus_voltage_v`, `current_ma`, `power_mw`
+- `ax`, `ay`, `az`, `gx`, `gy`, `gz`
+- `physical_event`, `electrical_state`, `label`, `data_quality`
 
 ## ML plan
 
-Priyada’s next task is not to jump directly to a final model. The pipeline is:
-1. Load raw CSV files
-2. Validate data
+Priyada’s pipeline follows:
+1. Load raw CSV files from `ml/dataset/raw/`
+2. Validate data and preserve data quality annotations (`MEASURED`, `LOOSE_CONNECTION_ANOMALY`, `IMPUTED_BUS_VOLTAGE`)
 3. Handle session and timestamp boundaries
-4. Calculate motion features
-5. Calculate electrical features
-6. Combine features
-7. Visualize distributions
+4. Calculate multi-axis motion features
+5. Calculate zone electrical features
+6. Combine features for sensor fusion
+7. Visualize feature distributions & correlations
 8. Check class balance
-9. Detect obvious noise and outliers
-10. Prepare train/test split without leakage
+9. Detect noise and outliers
+10. Prepare stratified train/test split without leakage
 
 Recommended derived features:
 - `accel_magnitude`
@@ -199,57 +190,64 @@ Target classes:
 - `PHYSICAL_TAMPER`
 - `BREACH`
 
-The baseline model should begin with Random Forest. Deep learning is not the immediate next step.
+The baseline model will evaluate Random Forest / Decision Tree algorithms.
 
-The evaluation must report:
+The evaluation will report:
 - accuracy
 - precision
 - recall
 - F1-score
 - confusion matrix
 
-False negatives for tamper and breach classes must be reviewed carefully, because security systems are sensitive to missed detections.
+False negatives for tamper and breach classes will be analyzed carefully.
 
 ## Repository structure
 
 ```text
 FENCEGUARD-X/
 ├── README.md
-├── EXP_01_NORMAL_STATIONARY.csv
-├── data/
-│   ├── raw/
-│   │   └── tamper_experiments/
-│   │       └── EXP_01_NORMAL_STATIONARY.csv
-│   └── processed/
-├── docs/
-│   ├── architecture/
-│   ├── experiments/
-│   ├── hardware/
-│   ├── ml/
-│   ├── TEAM_TASK_TRACKER.md
-│   └── ...
+├── PROJECT_STATUS.md
+├── PROJECT_IMPLEMENTATION_REPORT.md
+├── AUDIT_REPORT_17AUG2026.md
+├── TEAM_COLLABORATION.md
+├── EXECUTION_CHECKLIST.md
+├── QUICK_START.md
 ├── hardware/
-│   ├── circuit/
+│   ├── README.md
+│   ├── components.md
+│   ├── EXPERIMENT_LOG.md
 │   ├── integration/
-│   ├── schematics/
 │   ├── sensors/
-│   ├── testing/
-│   └── zone-testing/
+│   ├── zone-testing/
+│   └── experiments/
+│       ├── README.md
+│       ├── physical_tamper/
+│       │   ├── EXP_01_NORMAL_STATIONARY.csv
+│       │   └── EXP_02_PHYSICAL_EXPERIMENTS_LABELED.csv
+│       └── electrical_faults/
+│           └── sih_fence_raw_dataset.csv
 ├── firmware/
+│   ├── README.md
 │   └── esp32/
 ├── backend/
+│   ├── README.md
+│   ├── api/
+│   └── database/
 ├── dashboard/
+│   └── README.md
 ├── frontend/
 ├── ml/
+│   ├── README.md
 │   ├── dataset/
-│   ├── notebooks/
+│   │   ├── README.md
+│   │   ├── raw/
+│   │   └── processed/
 │   ├── preprocessing/
+│   ├── notebooks/
 │   ├── models/
 │   └── training/
-├── presentation/
-├── media/
-├── project-management/
-└── docs/
+├── docs/
+└── project-management/
 ```
 
 ## Current implementation status

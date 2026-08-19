@@ -429,7 +429,9 @@ git commit -m "feat: your change"
 git push origin feature/your-task
 ```
 
-### For Firmware (Jayesh + Anup)
+---
+
+### For Firmware (Anup)
 
 Install Arduino IDE or PlatformIO:
 - Arduino IDE: https://www.arduino.cc/en/software
@@ -464,7 +466,7 @@ npm install
 npm start
 ```
 
-### For Dashboard (Ananya)
+### For Dashboard (Sakshi)
 
 ```bash
 # Create React app
@@ -490,7 +492,7 @@ npm run dev
 **Example escalation**:
 
 ```
-1. GitHub Issue: @Jayesh Can you help with I2C timeout?
+1. GitHub Issue: @Anup Can you help with I2C timeout?
    [Wait 30 min]
    
 2. Slack: @team Quick call? I2C not working. Need help in 15 min.

@@ -6,6 +6,29 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [2026-08-19] — 3-Zone Prototype Alignment & Dataset Standardization
+
+### Updated
+
+- **Team Ownership Alignment**:
+  - **Anup**: IoT & Automation + Firmware/Hardware Lead
+  - **Priyada**: ML Lead
+  - **Alok Kumar**: Backend Lead
+  - **Sakshi**: Frontend & Deployment Lead
+  - **Ananya**: Presentation Lead
+  - *Jayesh*: Removed from active team roster; firmware responsibilities covered by Anup.
+
+- **Dataset Organization & Integrity**:
+  - Standardized original experimental evidence into `hardware/experiments/physical_tamper/` (`EXP_01_NORMAL_STATIONARY.csv`, `EXP_02_PHYSICAL_EXPERIMENTS_LABELED.csv`) and `hardware/experiments/electrical_faults/` (`sih_fence_raw_dataset.csv`).
+  - Mirrored raw experimental datasets under `ml/dataset/raw/` for Priyada's ML pipeline.
+  - Preserved exact empirical measurements and tagged loose connection anomalies (`LOOSE_CONNECTION_ANOMALY`, `IMPUTED_BUS_VOLTAGE`).
+
+- **Hardware & Sensor Fusion Alignment**:
+  - Documented 3-zone low-voltage prototype GPIO allocations (Zone 1: GPIO 34, Zone 2: GPIO 35, Zone 3: GPIO 32; I2C 21/22 for INA219 @ 0x40 and MPU6050 @ 0x68).
+  - Outlined multi-axis temporal motion feature extraction ($||a||, ||\omega||, \Delta a, \Delta \omega$, rolling std/mean) fused with electrical zone states.
+
+---
+
 ## [2026-08-14] — Initial Project Setup
 
 ### Added

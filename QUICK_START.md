@@ -43,10 +43,11 @@ Click "Create Project"
 Use the issue templates in [GITHUB_PROJECT_SETUP.md](GITHUB_PROJECT_SETUP.md)
 
 Create one issue per task from:
-- IOT-01 through IOT-08 (Anup)
-- FW-01 through FW-07 (Jayesh)
+- IOT-01 through IOT-08 (Anup - Hardware)
+- FW-01 through FW-07 (Anup - Firmware)
 - ML-01 through ML-08 (Priyada)
 - BE-01 through BE-07 (Alok Kumar)
+- DB-01 through DB-07 (Sakshi)
 - PPT-01 through PPT-11 (Ananya)
 - INT-01 through INT-05 (All)
 
@@ -58,10 +59,10 @@ Create one issue per task from:
 
 | Name | Role | Assign Issues | Email/GitHub |
 |------|------|---------------|--------------|
-| Anup | IoT & Automation Lead | IOT-01 to IOT-08 | @anup |
-| Jayesh | Firmware Lead | FW-01 to FW-07 | @jayesh |
+| Anup | IoT, Hardware & Firmware Lead | IOT-01..08, FW-01..07 | @anup |
 | Priyada | ML Lead | ML-01 to ML-08 | @priyada |
 | Alok Kumar | Backend Lead | BE-01 to BE-07 | @alok-kumar |
+| Sakshi | Frontend & Deployment Lead | DB-01 to DB-07 | @sakshi |
 | Ananya | Presentation Lead | PPT-01 to PPT-11 | @ananya |
 | All | Integration & Testing | INT-01 to INT-05 | @all |
 
@@ -313,10 +314,10 @@ EVERY 2 DAYS: 6:00 PM - Sync (30 min)
 4. **Fourth**: Call/video sync if needed
 
 **Team Leads** (Go-to people):
-- Hardware issues → Anup
-- Firmware issues → Jayesh
+- Hardware & Firmware issues → Anup
 - ML issues → Priyada
 - Backend issues → Alok Kumar
+- Frontend & Deployment issues → Sakshi
 - Presentation issues → Ananya
 - Integration issues → Whole team
 
