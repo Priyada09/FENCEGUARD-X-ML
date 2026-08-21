@@ -1,0 +1,23 @@
+{
+  "model_type": "DecisionTreeClassifier",
+  "max_depth": 4,
+  "random_state": 42,
+  "feature_order": [
+    "accel_mag",
+    "gyro_mag",
+    "delta_accel",
+    "delta_gyro",
+    "rolling_mean",
+    "rolling_std",
+    "peak_accel",
+    "peak_gyro"
+  ],
+  "target_column": "physical_target",
+  "label_order": [
+    "NORMAL",
+    "PHYSICAL_TAMPER"
+  ],
+  "training_rows": 39,
+  "source_dataset": "ml\\dataset\\processed\\physical_tamper_model_ready.csv",
+  "notes": "Training-set fit metric only, not a validated generalization result. All 7 PHYSICAL_TAMPER rows come from a single session."
+}
