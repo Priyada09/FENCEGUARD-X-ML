@@ -1,0 +1,34 @@
+{
+  "model_type": "DecisionTreeClassifier",
+  "sklearn_version": "1.9.0",
+  "hyperparameters": {
+    "max_depth": 4,
+    "random_state": 42
+  },
+  "feature_columns_exact_order": [
+    "zone1_voltage_v",
+    "zone2_voltage_v",
+    "zone3_voltage_v",
+    "bus_voltage_v",
+    "current_ma",
+    "power_mw"
+  ],
+  "target_column": "condition",
+  "model_classes": [
+    "NORMAL",
+    "OPEN_CUT",
+    "SHORT"
+  ],
+  "training_row_count": 20,
+  "training_class_distribution_measured_only": {
+    "OPEN_CUT": 9,
+    "SHORT": 9,
+    "NORMAL": 2
+  },
+  "source_dataset": "ml/dataset/raw/sih_fence_raw_dataset.csv",
+  "rows_excluded": "6 IMPUTED_BUS_VOLTAGE rows excluded from training (bus_voltage_v reconstructed, not measured)",
+  "train_test_split": false,
+  "cross_validation": false,
+  "performance_metrics": "NOT COMPUTED - none exist in the source notebook (01_electrical_fault_baseline.ipynb); dataset is too small/imbalanced for meaningful metrics",
+  "validation_status": "NOT INDEPENDENTLY VALIDATED. This is a proof-of-concept baseline persisted exactly as implemented in the existing notebook. No accuracy, precision, recall, F1, or confusion matrix has been computed for this model, in this script or the source notebook."
+}
